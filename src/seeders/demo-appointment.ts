@@ -1,0 +1,125 @@
+import { QueryInterface } from 'sequelize';
+import { AppointmentStatus, AppointmentType } from '../models/Appointment';
+
+module.exports = {
+    up: async (queryInterface: QueryInterface) => {
+        const appointments = [
+            {
+                location: '123 Main St, City A',
+                type: AppointmentType.PHYSICAL,
+                datetime: new Date(),
+                notes: 'General checkup',
+                status: AppointmentStatus.PENDING,
+                providerId: 1,
+                seekerId: 1,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '456 Elm St, City B',
+                type: AppointmentType.VIRTUAL,
+                datetime: new Date(),
+                notes: 'Follow-up consultation',
+                status: AppointmentStatus.CONFIRMED,
+                providerId: 2,
+                seekerId: 2,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '789 Oak St, City C',
+                type: AppointmentType.PHYSICAL,
+                datetime: new Date(),
+                notes: 'Dental checkup',
+                status: AppointmentStatus.COMPLETED,
+                providerId: 3,
+                seekerId: 3,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '101 Pine St, City D',
+                type: AppointmentType.VIRTUAL,
+                datetime: new Date(),
+                notes: 'Eye test',
+                status: AppointmentStatus.CANCELLED,
+                providerId: 4,
+                seekerId: 4,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '202 Birch St, City E',
+                type: AppointmentType.PHYSICAL,
+                datetime: new Date(),
+                notes: 'Routine health check',
+                status: AppointmentStatus.NO_SHOW,
+                providerId: 5,
+                seekerId: 5,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '303 Cedar St, City F',
+                type: AppointmentType.VIRTUAL,
+                datetime: new Date(),
+                notes: 'Nutrition consultation',
+                status: AppointmentStatus.PENDING,
+                providerId: 6,
+                seekerId: 6,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '404 Maple St, City G',
+                type: AppointmentType.PHYSICAL,
+                datetime: new Date(),
+                notes: 'Cardiology check',
+                status: AppointmentStatus.CONFIRMED,
+                providerId: 7,
+                seekerId: 7,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '505 Spruce St, City H',
+                type: AppointmentType.VIRTUAL,
+                datetime: new Date(),
+                notes: 'Mental health session',
+                status: AppointmentStatus.COMPLETED,
+                providerId: 8,
+                seekerId: 8,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '606 Walnut St, City I',
+                type: AppointmentType.PHYSICAL,
+                datetime: new Date(),
+                notes: 'Physiotherapy session',
+                status: AppointmentStatus.CANCELLED,
+                providerId: 9,
+                seekerId: 9,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                location: '707 Chestnut St, City J',
+                type: AppointmentType.VIRTUAL,
+                datetime: new Date(),
+                notes: 'Dermatology consultation',
+                status: AppointmentStatus.NO_SHOW,
+                providerId: 10,
+                seekerId: 10,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+        ];
+
+        await queryInterface.bulkInsert('appointments', appointments);
+    },
+
+    down: async (queryInterface: QueryInterface) => {
+        await queryInterface.bulkDelete('appointments', {});
+    },
+};
