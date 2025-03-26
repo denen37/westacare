@@ -2,8 +2,8 @@ import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNu
 import { User, Centre, Qualification, Seeker } from './Models';
 
 
-@Table({ timestamps: true, tableName: 'medical_records' })
-export class MedicalRecord extends Model {
+@Table({ timestamps: true, tableName: 'medical_info' })
+export class MedicalInfo extends Model {
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.BIGINT)

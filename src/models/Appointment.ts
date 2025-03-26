@@ -8,6 +8,7 @@ export enum AppointmentStatus {
     CONFIRMED = 'confirmed',
     CANCELLED = 'cancelled',
     COMPLETED = 'completed',
+    RESCHEDULED = 'rescheduled',
     NO_SHOW = 'no_show'
 }
 
@@ -44,6 +45,13 @@ export class Appointment extends Model {
 
 
 
+    @AllowNull(false)
+    @Default(30)
+    @Column(DataType.INTEGER)
+    duration!: number;
+
+
+
     @AllowNull(true)
     @Column(DataType.STRING)
     notes!: string;
@@ -54,6 +62,13 @@ export class Appointment extends Model {
     @Default(AppointmentStatus.PENDING)
     @Column(DataType.ENUM(...Object.values(AppointmentStatus)))
     status!: string;
+
+
+
+    @AllowNull(false)
+    @Default(false)
+    @Column(DataType.BOOLEAN)
+    paid!: boolean;
 
 
 

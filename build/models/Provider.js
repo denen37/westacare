@@ -25,6 +25,19 @@ __decorate([
 ], Provider.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)('Dr'),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(100)),
+    __metadata("design:type", String)
+], Provider.prototype, "title", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)(1),
+    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Specialization),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.INTEGER),
+    __metadata("design:type", Number)
+], Provider.prototype, "specializationId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(100)),
     __metadata("design:type", String)
 ], Provider.prototype, "firstName", void 0);
@@ -90,6 +103,10 @@ __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
     __metadata("design:type", Number)
 ], Provider.prototype, "centreId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Specialization, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Specialization)
+], Provider.prototype, "specialization", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Centre, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.Centre)

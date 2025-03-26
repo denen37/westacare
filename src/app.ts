@@ -1,10 +1,10 @@
-// src/app.ts
 import express from 'express';
 import db from './config/db';
 import cors from 'cors';
 import config from './config/configSetup';
 import { isAuthorized } from './middleware/authorize';
-import authRoutes from './routes/auth';
+import routes from './routes/routes';
+import { initializeReminders } from './services/reminder';
 
 const app = express();
 app.use(express.json());
@@ -15,7 +15,9 @@ app.get('/', (req, res) => {
 });
 
 app.all('*', isAuthorized);
-app.use('/api', authRoutes);
+app.use('/api', routes);
+
+initializeReminders();
 
 db.sync({ alter: true }).then(() => {
     app.listen(config.PORT, () => console.log(`Server is running on http://localhost:${config.PORT}`));

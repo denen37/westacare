@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, Is, PrimaryKey, AutoIncrement, IsDate } from 'sequelize-typescript';
-import { PrescriptionItem, User } from './Models';
+import { PrescriptionItem, Seeker, User } from './Models';
 
 export enum Recurrence {
     ONEOFF = 'oneoff',
@@ -22,15 +22,23 @@ export class Reminder extends Model {
     id!: number;
 
 
-
-    // @Is(function setFutureOneoffDate(value: Date, options: { instance: Reminder }):void { 
-    //     if(options.instance.recurrence === 'oneoff' && value <= new Date()) {
-    //     throw new Error('One-off reminder date must be in the future');
-    // }})
     @IsDate
     @AllowNull(false)
-    @Column(DataType.DATE)
-    time!: Date
+    @Default(new Date())
+    @Column(DataType.DATEONLY)
+    startDate!: Date
+
+
+    @IsDate
+    @AllowNull(true)
+    @Column(DataType.DATEONLY)
+    endDate!: Date
+
+
+
+    @AllowNull(false)
+    @Column(DataType.JSON)
+    times!: string
 
 
 
@@ -42,19 +50,27 @@ export class Reminder extends Model {
 
 
     @AllowNull(false)
+    @Column(DataType.STRING)
+    medicine!: string
+
+
+    @AllowNull(false)
+    @Column(DataType.STRING(20))
+    dosage!: string
+
+
+    @AllowNull(false)
     @Default(ReminderStatus.ONGOING)
     @Column(DataType.ENUM(...Object.values(ReminderStatus)))
     status!: string
 
 
-
-    @ForeignKey(() => PrescriptionItem)
     @AllowNull(false)
+    @ForeignKey(() => Seeker)
     @Column(DataType.BIGINT)
-    prescriptionItemId!: number;
+    seekerId!: number
 
 
-
-    @BelongsTo(() => PrescriptionItem)
-    medicine!: PrescriptionItem;
+    @BelongsTo(() => Seeker)
+    seeker!: Seeker
 }

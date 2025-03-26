@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { Provider, Seeker, User } from './Models'
+import { Appointment, Provider, Seeker, User } from './Models'
 
 
 export enum ReferralStatus {
@@ -22,6 +22,11 @@ export class Referral extends Model {
     @AllowNull(false)
     @Column(DataType.STRING)
     reason!: string;
+
+
+    @AllowNull(false)
+    @Column(DataType.DATE)
+    datetime!: Date;
 
 
 
@@ -56,11 +61,6 @@ export class Referral extends Model {
 
 
 
-    @BelongsTo(() => Provider, { onDelete: 'CASCADE' })
-    referredBy!: Provider;
-
-
-
     @ForeignKey(() => Provider)
     @AllowNull(false)
     @Column(DataType.BIGINT)
@@ -69,6 +69,13 @@ export class Referral extends Model {
 
 
     @BelongsTo(() => Provider, { onDelete: 'CASCADE' })
+    referredBy!: Provider;
+
+
+    @BelongsTo(() => Provider, { onDelete: 'CASCADE' })
     referredTo!: Provider;
 
+
+    @HasOne(() => Appointment, { onDelete: 'CASCADE' })
+    appointment!: Appointment;
 }

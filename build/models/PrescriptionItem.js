@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrescriptionItem = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const Models_1 = require("./Models");
-const Reminder_1 = require("./Reminder");
 let PrescriptionItem = class PrescriptionItem extends sequelize_typescript_1.Model {
 };
 exports.PrescriptionItem = PrescriptionItem;
@@ -62,10 +61,6 @@ __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
     __metadata("design:type", String)
 ], PrescriptionItem.prototype, "instructions", void 0);
-__decorate([
-    (0, sequelize_typescript_1.HasOne)(() => Reminder_1.Reminder),
-    __metadata("design:type", Reminder_1.Reminder)
-], PrescriptionItem.prototype, "reminder", void 0);
 exports.PrescriptionItem = PrescriptionItem = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true, tableName: 'prescription_items' })
 ], PrescriptionItem);

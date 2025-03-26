@@ -44,7 +44,7 @@ export const successResponseFalse = (res: any, message: string = 'Operation succ
 };
 
 export const errorResponse = (res: any, message: string = 'An error occured', data?: any) => {
-    return res.status(200).json({
+    return res.status(500).json({
         status: false,
         message,
         data,
@@ -200,4 +200,12 @@ export function mergeDuplicates(inputList: any) {
     });
 
     return mergedList;
+}
+
+export function getDate(date: string) {
+    return new Date(date).toLocaleDateString();
+}
+
+export function getTime(date: string) {
+    return new Date(date).toLocaleTimeString();
 }

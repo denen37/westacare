@@ -1,6 +1,6 @@
 import { Request, Response, response } from 'express';
 import { getRandom, hash, handleResponse, successResponse, successResponseFalse, validateEmail, randomId, errorResponse } from '../utils/modules';
-import { User, OTP, Qualification, Registration, Provider, Availability, Charge, Credential, Wallet, Seeker, Centre, Appointment } from '../models/Models'
+import { User, OTP, Qualification, Registration, Provider, Availability, Charge, Credential, Wallet, Seeker, Centre, Appointment, Experience, Specialization, MedicalHistory, MedicalInfo } from '../models/Models'
 import { Gender } from '../models/Seeker';
 import { Op } from 'sequelize';
 import { UserRole } from '../models/User';
@@ -70,6 +70,96 @@ export const createProviderProfile1 = async (req: Request, res: Response) => {
         })
 
         return successResponse(res, 'success', savedProfile)
+    } catch (error) {
+        return errorResponse(res, 'error', error)
+    }
+}
+
+export const updateSeekerProfile1 = async (req: Request, res: Response) => {
+    const { id, email } = req.user;
+
+    const user = await User.findOne({ where: { id }, include: [{ model: Seeker }] })
+
+    const seekerId = user?.seeker.id;
+
+    const { image, bloodGroup, maritalStatus, height, weight } = req.body;
+
+    try {
+        const updatedProfile = await Seeker.update({
+            image,
+            bloodGroup,
+            maritalStatus,
+            height,
+            weight
+        }, {
+            where: {
+                id: seekerId
+            }
+        })
+
+        return successResponse(res, 'success', updatedProfile)
+    } catch (error) {
+        return errorResponse(res, 'error', error)
+    }
+}
+
+export const updateSeekerProfile2 = async (req: Request, res: Response) => {
+    const { id, email } = req.user;
+
+    const user = await User.findOne({ where: { id }, include: [{ model: Seeker }] })
+
+    const seekerId = user?.seeker.id;
+
+    const {
+        allergies,
+        currMed,
+        pastMed,
+        chronicDisease,
+        injuries,
+        surgeries,
+        smokingHabits,
+        alcoholConsumption,
+        activityLevel
+    } = req.body;
+
+    try {
+
+        const [medicalInfo, created] = await MedicalInfo.findOrCreate({
+            where: {
+                seekerId
+            },
+            defaults: {
+                allergies,
+                currMed,
+                pastMed,
+                chronicDisease,
+                injuries,
+                surgeries,
+                smokingHabits,
+                alcoholConsumption,
+                activityLevel
+            }
+        })
+
+        if (!created) {
+            const rows = await medicalInfo.update({
+                allergies,
+                currMed,
+                pastMed,
+                chronicDisease,
+                injuries,
+                surgeries,
+                smokingHabits,
+                alcoholConsumption,
+                activityLevel
+            })
+
+            medicalInfo.save();
+
+            return successResponse(res, 'success', rows)
+        }
+
+        return successResponse(res, 'success', medicalInfo)
     } catch (error) {
         return errorResponse(res, 'error', error)
     }
@@ -169,11 +259,13 @@ export const upload_credential = async (req: Request, res: Response) => {
     }
 }
 
+
 export const me = async (req: Request, res: Response) => {
     console.log(req.user)
 
     return successResponse(res, 'success', req.user);
 }
+
 
 export const dashboard = async (req: Request, res: Response) => {
     let { id, email } = req.user;
@@ -223,3 +315,77 @@ export const dashboard = async (req: Request, res: Response) => {
         return errorResponse(res, 'error', err);
     }
 }
+
+
+export const getProfileById = async (req: Request, res: Response) => {
+    let { id } = req.params;
+
+    try {
+        const user = await Provider.findOne({
+            include: [
+                {
+                    model: User
+                },
+                {
+                    model: Centre,
+                },
+                {
+                    model: Availability
+                },
+                {
+                    model: Appointment
+                },
+                {
+                    model: Qualification
+                },
+                {
+                    model: Experience
+                }
+            ]
+        })
+    } catch (error) {
+        return errorResponse(res, 'error', error);
+    }
+}
+
+
+export const getProviders = async (req: Request, res: Response) => {
+    let { specialization } = req.query;
+
+    let spec
+
+    if (specialization) {
+        spec = await Specialization.findOne({
+            where: {
+                name: specialization
+            }
+        })
+    }
+
+    let whereCondition = spec ? {
+        specialization: spec.id
+    } : {}
+
+
+    try {
+        const providers = await Provider.findAll({
+            where: whereCondition,
+            include: [
+                {
+                    model: User
+                },
+                {
+                    model: Specialization
+                    //Include ratings also
+                }
+            ]
+        })
+
+
+        return successResponse(res, 'success', providers);
+    } catch (error) {
+        return errorResponse(res, 'error', error);
+    }
+}
+
+

@@ -34,9 +34,21 @@ __decorate([
 __decorate([
     sequelize_typescript_1.IsDate,
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATE),
+    (0, sequelize_typescript_1.Default)(new Date()),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATEONLY),
     __metadata("design:type", Date)
-], Reminder.prototype, "time", void 0);
+], Reminder.prototype, "startDate", void 0);
+__decorate([
+    sequelize_typescript_1.IsDate,
+    (0, sequelize_typescript_1.AllowNull)(true),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATEONLY),
+    __metadata("design:type", Date)
+], Reminder.prototype, "endDate", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.JSON),
+    __metadata("design:type", String)
+], Reminder.prototype, "times", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Default)(Recurrence.ONEOFF),
@@ -45,20 +57,30 @@ __decorate([
 ], Reminder.prototype, "recurrence", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
+], Reminder.prototype, "medicine", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(20)),
+    __metadata("design:type", String)
+], Reminder.prototype, "dosage", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Default)(ReminderStatus.ONGOING),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM(...Object.values(ReminderStatus))),
     __metadata("design:type", String)
 ], Reminder.prototype, "status", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.PrescriptionItem),
     (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Seeker),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
     __metadata("design:type", Number)
-], Reminder.prototype, "prescriptionItemId", void 0);
+], Reminder.prototype, "seekerId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.PrescriptionItem),
-    __metadata("design:type", Models_1.PrescriptionItem)
-], Reminder.prototype, "medicine", void 0);
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Seeker),
+    __metadata("design:type", Models_1.Seeker)
+], Reminder.prototype, "seeker", void 0);
 exports.Reminder = Reminder = __decorate([
     (0, sequelize_typescript_1.Table)({ updatedAt: false, tableName: 'reminders' })
 ], Reminder);

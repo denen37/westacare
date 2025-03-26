@@ -18,6 +18,7 @@ var AppointmentStatus;
     AppointmentStatus["CONFIRMED"] = "confirmed";
     AppointmentStatus["CANCELLED"] = "cancelled";
     AppointmentStatus["COMPLETED"] = "completed";
+    AppointmentStatus["RESCHEDULED"] = "rescheduled";
     AppointmentStatus["NO_SHOW"] = "no_show";
 })(AppointmentStatus || (exports.AppointmentStatus = AppointmentStatus = {}));
 var AppointmentType;
@@ -50,6 +51,12 @@ __decorate([
     __metadata("design:type", Date)
 ], Appointment.prototype, "datetime", void 0);
 __decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)(30),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.INTEGER),
+    __metadata("design:type", Number)
+], Appointment.prototype, "duration", void 0);
+__decorate([
     (0, sequelize_typescript_1.AllowNull)(true),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
     __metadata("design:type", String)
@@ -60,6 +67,12 @@ __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM(...Object.values(AppointmentStatus))),
     __metadata("design:type", String)
 ], Appointment.prototype, "status", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BOOLEAN),
+    __metadata("design:type", Boolean)
+], Appointment.prototype, "paid", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Referral),
     (0, sequelize_typescript_1.AllowNull)(true),

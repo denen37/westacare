@@ -1,6 +1,6 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 import { Gender } from './Seeker';
-import { User, Centre, Qualification, Appointment, Prescription, Availability, Registration } from './Models';
+import { User, Centre, Qualification, Appointment, Prescription, Availability, Registration, Specialization } from './Models';
 import { Charge } from './Charge';
 
 @Table({ timestamps: true, tableName: 'providers' })
@@ -9,6 +9,22 @@ export class Provider extends Model {
     @AutoIncrement
     @Column(DataType.BIGINT)
     id!: number;
+
+
+
+    @AllowNull(false)
+    @Default('Dr')
+    @Column(DataType.STRING(100))
+    title!: string;
+
+
+
+    @AllowNull(false)
+    @Default(1)
+    @ForeignKey(() => Specialization)
+    @Column(DataType.INTEGER)
+    specializationId!: number;
+
 
 
     @AllowNull(false)
@@ -84,6 +100,10 @@ export class Provider extends Model {
     @AllowNull(true)
     @Column(DataType.BIGINT)
     centreId!: number;
+
+
+    @BelongsTo(() => Specialization, { onDelete: 'CASCADE' })
+    specialization!: Specialization;
 
 
     @BelongsTo(() => Centre, { onDelete: 'CASCADE' })

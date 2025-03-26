@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { MedicalRecord, TestReport, User, Appointment, Prescription } from './Models';
+import { MedicalInfo, TestReport, User, Appointment, Prescription, MedicalHistory, Referral } from './Models';
 
 export enum Gender {
     MALE = 'male',
@@ -82,8 +82,8 @@ export class Seeker extends Model {
     user!: User;
 
 
-    @HasOne(() => MedicalRecord, { onDelete: 'CASCADE' })
-    medicalRecord!: MedicalRecord
+    @HasOne(() => MedicalInfo, { onDelete: 'CASCADE' })
+    medicalInfo!: MedicalInfo
 
 
 
@@ -97,4 +97,11 @@ export class Seeker extends Model {
 
     @HasMany(() => Appointment, { onDelete: 'CASCADE' })
     appointments!: Appointment[]
+
+
+    @HasMany(() => MedicalHistory, { onDelete: 'CASCADE' })
+    medicalHistory!: MedicalHistory[]
+
+    @HasMany(() => Referral, { onDelete: 'CASCADE' })
+    referrals!: Referral[]
 }

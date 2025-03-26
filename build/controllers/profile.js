@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dashboard = exports.me = exports.upload_credential = exports.updateProfile2 = exports.uploadAvatar = exports.createProviderProfile1 = void 0;
+exports.getProviders = exports.getProfileById = exports.dashboard = exports.me = exports.upload_credential = exports.updateProfile2 = exports.uploadAvatar = exports.updateSeekerProfile2 = exports.updateSeekerProfile1 = exports.createProviderProfile1 = void 0;
 const modules_1 = require("../utils/modules");
 const Models_1 = require("../models/Models");
 const sequelize_1 = require("sequelize");
@@ -57,6 +57,74 @@ const createProviderProfile1 = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.createProviderProfile1 = createProviderProfile1;
+const updateSeekerProfile1 = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, email } = req.user;
+    const user = yield Models_1.User.findOne({ where: { id }, include: [{ model: Models_1.Seeker }] });
+    const seekerId = user === null || user === void 0 ? void 0 : user.seeker.id;
+    const { image, bloodGroup, maritalStatus, height, weight } = req.body;
+    try {
+        const updatedProfile = yield Models_1.Seeker.update({
+            image,
+            bloodGroup,
+            maritalStatus,
+            height,
+            weight
+        }, {
+            where: {
+                id: seekerId
+            }
+        });
+        return (0, modules_1.successResponse)(res, 'success', updatedProfile);
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.updateSeekerProfile1 = updateSeekerProfile1;
+const updateSeekerProfile2 = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, email } = req.user;
+    const user = yield Models_1.User.findOne({ where: { id }, include: [{ model: Models_1.Seeker }] });
+    const seekerId = user === null || user === void 0 ? void 0 : user.seeker.id;
+    const { allergies, currMed, pastMed, chronicDisease, injuries, surgeries, smokingHabits, alcoholConsumption, activityLevel } = req.body;
+    try {
+        const [medicalInfo, created] = yield Models_1.MedicalInfo.findOrCreate({
+            where: {
+                seekerId
+            },
+            defaults: {
+                allergies,
+                currMed,
+                pastMed,
+                chronicDisease,
+                injuries,
+                surgeries,
+                smokingHabits,
+                alcoholConsumption,
+                activityLevel
+            }
+        });
+        if (!created) {
+            const rows = yield medicalInfo.update({
+                allergies,
+                currMed,
+                pastMed,
+                chronicDisease,
+                injuries,
+                surgeries,
+                smokingHabits,
+                alcoholConsumption,
+                activityLevel
+            });
+            medicalInfo.save();
+            return (0, modules_1.successResponse)(res, 'success', rows);
+        }
+        return (0, modules_1.successResponse)(res, 'success', medicalInfo);
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.updateSeekerProfile2 = updateSeekerProfile2;
 const uploadAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     let avatar = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
@@ -174,3 +242,67 @@ const dashboard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.dashboard = dashboard;
+const getProfileById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    try {
+        const user = yield Models_1.Provider.findOne({
+            include: [
+                {
+                    model: Models_1.User
+                },
+                {
+                    model: Models_1.Centre,
+                },
+                {
+                    model: Models_1.Availability
+                },
+                {
+                    model: Models_1.Appointment
+                },
+                {
+                    model: Models_1.Qualification
+                },
+                {
+                    model: Models_1.Experience
+                }
+            ]
+        });
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.getProfileById = getProfileById;
+const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { specialization } = req.query;
+    let spec;
+    if (specialization) {
+        spec = yield Models_1.Specialization.findOne({
+            where: {
+                name: specialization
+            }
+        });
+    }
+    let whereCondition = spec ? {
+        specialization: spec.id
+    } : {};
+    try {
+        const providers = yield Models_1.Provider.findAll({
+            where: whereCondition,
+            include: [
+                {
+                    model: Models_1.User
+                },
+                {
+                    model: Models_1.Specialization
+                    //Include ratings also
+                }
+            ]
+        });
+        return (0, modules_1.successResponse)(res, 'success', providers);
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.getProviders = getProviders;

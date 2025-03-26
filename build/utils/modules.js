@@ -18,6 +18,8 @@ exports.getDistanceFromLatLonInKm = getDistanceFromLatLonInKm;
 exports.isGreaterByOne = isGreaterByOne;
 exports.isEqual = isEqual;
 exports.mergeDuplicates = mergeDuplicates;
+exports.getDate = getDate;
+exports.getTime = getTime;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // import { TransactionDateType } from '../models/Transaction';
 exports.saltRounds = 10;
@@ -57,7 +59,7 @@ const successResponseFalse = (res, message = 'Operation successfull', data) => {
 };
 exports.successResponseFalse = successResponseFalse;
 const errorResponse = (res, message = 'An error occured', data) => {
-    return res.status(200).json({
+    return res.status(500).json({
         status: false,
         message,
         data,
@@ -181,4 +183,10 @@ function mergeDuplicates(inputList) {
         }
     });
     return mergedList;
+}
+function getDate(date) {
+    return new Date(date).toLocaleDateString();
+}
+function getTime(date) {
+    return new Date(date).toLocaleTimeString();
 }

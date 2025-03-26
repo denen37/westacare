@@ -1,13 +1,20 @@
-import { QueryInterface } from 'sequelize';
-
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const Gender = {
     MALE: "male",
     FEMALE: "female",
 };
-
-
 module.exports = {
-    up: async (queryInterface: QueryInterface) => {
+    up: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
         const providers = [
             {
                 firstName: 'John',
@@ -61,11 +68,9 @@ module.exports = {
                 updatedAt: new Date(),
             }
         ];
-
-        await queryInterface.bulkInsert('providers', providers);
-    },
-
-    down: async (queryInterface: QueryInterface) => {
-        await queryInterface.bulkDelete('providers', {});
-    },
+        yield queryInterface.bulkInsert('providers', providers);
+    }),
+    down: (queryInterface) => __awaiter(void 0, void 0, void 0, function* () {
+        yield queryInterface.bulkDelete('providers', {});
+    }),
 };

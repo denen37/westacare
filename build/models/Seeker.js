@@ -94,9 +94,9 @@ __decorate([
     __metadata("design:type", Models_1.User)
 ], Seeker.prototype, "user", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasOne)(() => Models_1.MedicalRecord, { onDelete: 'CASCADE' }),
-    __metadata("design:type", Models_1.MedicalRecord)
-], Seeker.prototype, "medicalRecord", void 0);
+    (0, sequelize_typescript_1.HasOne)(() => Models_1.MedicalInfo, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.MedicalInfo)
+], Seeker.prototype, "medicalInfo", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => Models_1.TestReport, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.TestReport)
@@ -109,6 +109,14 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => Models_1.Appointment, { onDelete: 'CASCADE' }),
     __metadata("design:type", Array)
 ], Seeker.prototype, "appointments", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => Models_1.MedicalHistory, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Array)
+], Seeker.prototype, "medicalHistory", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => Models_1.Referral, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Array)
+], Seeker.prototype, "referrals", void 0);
 exports.Seeker = Seeker = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true, tableName: 'seekers' })
 ], Seeker);

@@ -35,6 +35,11 @@ __decorate([
 ], Referral.prototype, "reason", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATE),
+    __metadata("design:type", Date)
+], Referral.prototype, "datetime", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Default)(ReferralStatus.PENDING),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM(...Object.values(ReferralStatus))),
     __metadata("design:type", String)
@@ -61,10 +66,6 @@ __decorate([
     __metadata("design:type", Number)
 ], Referral.prototype, "referredByProviderId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Provider, { onDelete: 'CASCADE' }),
-    __metadata("design:type", Models_1.Provider)
-], Referral.prototype, "referredBy", void 0);
-__decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Provider),
     (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
@@ -73,7 +74,15 @@ __decorate([
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Provider, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.Provider)
+], Referral.prototype, "referredBy", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Provider, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Provider)
 ], Referral.prototype, "referredTo", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasOne)(() => Models_1.Appointment, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Appointment)
+], Referral.prototype, "appointment", void 0);
 exports.Referral = Referral = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true, tableName: 'referrals' })
 ], Referral);

@@ -9,7 +9,7 @@ import { StaffDetails } from './StaffDetails'
 import { CentreDocument } from './CentreDocument'
 import { Availability } from './Availability'
 import { Qualification } from './Qualification'
-import { MedicalRecord } from './MedicalRecord'
+import { MedicalInfo } from './MedicalInfo'
 import { TestReport } from './TestReport'
 import { Appointment } from './Appointment'
 import { Referral } from './Referral'
@@ -25,6 +25,10 @@ import { Registration } from './Registration'
 import { Charge } from './Charge'
 import { Credential } from './Credential'
 import { Wallet } from './Wallet'
+import { MedicalHistory } from './MedicalHistory'
+import { Experience } from './Experience'
+import { Specialization } from './Specialization'
+
 
 export {
     User,
@@ -38,7 +42,8 @@ export {
     CentreDocument,
     Availability,
     Qualification,
-    MedicalRecord,
+    MedicalInfo,
+    MedicalHistory,
     TestReport,
     Appointment,
     Referral,
@@ -53,5 +58,7 @@ export {
     Registration,
     Charge,
     Credential,
-    Wallet
+    Wallet,
+    Experience,
+    Specialization
 }

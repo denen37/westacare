@@ -57,8 +57,4 @@ export class PrescriptionItem extends Model {
     @AllowNull(false)
     @Column(DataType.TEXT)
     instructions!: string;
-
-
-    @HasOne(() => Reminder)
-    reminder!: Reminder
 }

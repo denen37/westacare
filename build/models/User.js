@@ -43,11 +43,13 @@ __decorate([
 ], User.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    sequelize_typescript_1.Unique,
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(50)),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    sequelize_typescript_1.Unique,
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(20)),
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
@@ -71,6 +73,11 @@ __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM(UserRole.ADMIN, UserRole.SEEKER, UserRole.PROVIDER, UserRole.CENTRE)),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
+], User.prototype, "deviceToken", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasOne)(() => Models_1.Seeker),
     __metadata("design:type", Models_1.Seeker)

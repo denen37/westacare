@@ -33,12 +33,14 @@ export class User extends Model {
 
 
     @AllowNull(false)
+    @Unique
     @Column(DataType.STRING(50))
     email!: string;
 
 
 
     @AllowNull(false)
+    @Unique
     @Column(DataType.STRING(20))
     phone!: string;
 
@@ -65,6 +67,12 @@ export class User extends Model {
     @Default(UserRole.SEEKER)
     @Column(DataType.ENUM(UserRole.ADMIN, UserRole.SEEKER, UserRole.PROVIDER, UserRole.CENTRE))
     role!: string;
+
+
+
+    @AllowNull(false)
+    @Column(DataType.STRING)
+    deviceToken!: string;
 
 
     @HasOne(() => Seeker)
