@@ -28,6 +28,7 @@ __decorate([
 ], AccountDetails.prototype, "name", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    sequelize_typescript_1.Unique,
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(20)),
     __metadata("design:type", String)
 ], AccountDetails.prototype, "number", void 0);
@@ -36,6 +37,16 @@ __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
     __metadata("design:type", String)
 ], AccountDetails.prototype, "bank", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
+], AccountDetails.prototype, "recipientCode", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(10)),
+    __metadata("design:type", String)
+], AccountDetails.prototype, "currency", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => Models_1.User),
     (0, sequelize_typescript_1.AllowNull)(false),

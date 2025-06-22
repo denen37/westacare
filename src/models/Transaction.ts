@@ -1,6 +1,10 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 import { User } from './Models';
 
+export enum TransactionStatus {
+    SUCCESS = 'success',
+    FAILED = 'failed',
+}
 
 export enum TransactionType {
     DEBIT = 'debit',
@@ -18,7 +22,7 @@ export class Transaction extends Model {
 
 
     @AllowNull(false)
-    @Column(DataType.FLOAT)
+    @Column(DataType.DECIMAL)
     amount!: number
 
 
@@ -29,10 +33,28 @@ export class Transaction extends Model {
     type!: string
 
 
+    @AllowNull(false)
+    @Column(DataType.ENUM(TransactionStatus.SUCCESS, TransactionStatus.FAILED))
+    status!: string
+
+
+
+    @AllowNull(false)
+    @Column(DataType.STRING)
+    channel!: string
+
+
+
+    @AllowNull(false)
+    @Default('NGN')
+    @Column(DataType.STRING)
+    currency!: string
+
+
 
     @AllowNull(false)
     @Column(DataType.DATE)
-    date!: Date
+    timestamp!: Date
 
 
 
@@ -42,9 +64,10 @@ export class Transaction extends Model {
 
 
 
-    @AllowNull(false)
+    @AllowNull(true)
+    @Unique
     @Column(DataType.STRING(200))
-    ref!: string
+    reference!: string
 
 
 

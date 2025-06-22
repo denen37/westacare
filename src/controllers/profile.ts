@@ -1,26 +1,38 @@
 import { Request, Response, response } from 'express';
 import { getRandom, hash, handleResponse, successResponse, successResponseFalse, validateEmail, randomId, errorResponse } from '../utils/modules';
-import { User, OTP, Qualification, Registration, Provider, Availability, Charge, Credential, Wallet, Seeker, Centre, Appointment, Experience, Specialization, MedicalHistory, MedicalInfo } from '../models/Models'
+import { User, OTP, Qualification, Registration, Provider, Availability, Charge, Credential, Wallet, Seeker, Centre, Appointment, Experience, Specialization, MedicalHistory, MedicalInfo, Feedback, Favorite } from '../models/Models'
 import { Gender } from '../models/Seeker';
 import { Op } from 'sequelize';
 import { UserRole } from '../models/User';
+import { uploadFileToBlob } from '../services/uploadCloud';
+
+
+enum StorageContainer {
+    PROFILE = 'profile',
+    GENERAL = 'general',
+    CREDENTIALS = 'credentials',
+}
 
 
 export const createProviderProfile1 = async (req: Request, res: Response) => {
     let {
         image,
-        fullName,
+        firstName,
+        lastName,
         qualification,
         registration,
+        specializationId,
         clinic,
         yearsOfExperience,
         about,
         userId
     }: {
         image: string;
-        fullName: string;
+        firstName: string;
+        lastName: string;
         qualification: Qualification;
         registration: Registration;
+        specializationId: number;
         clinic: string;
         yearsOfExperience: number;
         about: string;
@@ -41,7 +53,8 @@ export const createProviderProfile1 = async (req: Request, res: Response) => {
         }
 
         const savedProfile = await Provider.create({
-            fullName,
+            firstName,
+            lastName,
             image,
             yearsOfExperience,
             about,
@@ -166,17 +179,37 @@ export const updateSeekerProfile2 = async (req: Request, res: Response) => {
 }
 
 export const uploadAvatar = async (req: Request, res: Response) => {
-    let avatar = req.file?.path;
-
-    if (!avatar) {
-        return errorResponse(res, 'error', 'No file uploaded')
+    if (!req.file) {
+        return handleResponse(res, 404, false, 'No file uploaded');
     }
 
-    return successResponse(res, 'success', avatar)
+    const file = req.file as Express.Multer.File;
+
+    // const fileModified = {
+    //     buffer: file.buffer,
+    //     name: Date.now().toString(),
+    //     mimetype: file.mimetype,
+    // }
+
+    // try {
+    //     const path = await uploadFileToBlob(StorageContainer.PROFILE, fileModified)
+
+    //     return successResponse(res, 'success', { url: path })
+    // } catch (error) {
+    //     return handleResponse(res, 500, false, 'Error uploading file');
+    // }
+
+    try {
+        return successResponse(res, 'success', { url: '/uploads/' + file.filename })
+    } catch (error) {
+        return handleResponse(res, 500, false, 'Error uploading file');
+    }
 }
 
 //TODO - error here this is not returning the updated provider
 export const updateProfile2 = async (req: Request, res: Response) => {
+    const { id, role } = req.user;
+
     interface Profile2 {
         gender: Gender;
         dateOfBirth: Date;
@@ -187,35 +220,38 @@ export const updateProfile2 = async (req: Request, res: Response) => {
         charge: Charge;
     }
 
-    let { providerId } = req.params;
-
     let { gender, dateOfBirth, address, city, country, availabilities, charge }: Profile2 = req.body;
 
     try {
-        const updated = await Provider.update({
-            gender,
-            dateOfBirth,
-            address,
-            city,
-            country,
-        }, {
-            where: {
-                id: providerId
-            }
-        })
+
+        const provider = await Provider.findOne({ where: { userId: id } })
+
+        if (!provider) {
+            return handleResponse(res, 404, false, 'Provider not found');
+        }
+
+        provider.gender = gender;
+        provider.dateOfBirth = dateOfBirth;
+        provider.address = address;
+        provider.city = city;
+        provider.country = country;
+
+        const updated = await provider.save()
+
+
 
         const updatedAval: Availability[] = []
 
         availabilities.forEach(async (aval) => {
             const avalData: Partial<Availability> = {
-                startDayOfWeek: aval.startDayOfWeek,
-                endDayOfWeek: aval.endDayOfWeek,
+                startDay: aval.startDay,
+                endDay: aval.endDay,
                 openingTime: aval.openingTime,
                 closingTime: aval.closingTime,
                 isClosed: aval.isClosed,
                 isOpen24Hours: aval.isOpen24Hours,
                 notes: aval.notes,
-                providerId: aval.providerId
+                providerId: provider.id
             }
 
             const availability = await Availability.create(avalData)
@@ -228,7 +264,7 @@ export const updateProfile2 = async (req: Request, res: Response) => {
             video: charge.video,
             clinic: charge.clinic,
             unit: charge.unit,
-            providerId: charge.providerId
+            providerId: provider.id
         }
 
         const updatedCharge: Charge = await Charge.create(chargeData);
@@ -248,9 +284,23 @@ export const updateProfile2 = async (req: Request, res: Response) => {
 export const upload_credential = async (req: Request, res: Response) => {
     let { name, providerId } = req.body;
 
-    let path = req.file?.path;
-
     try {
+        // let path = req.file?.path;
+
+        if (!req.files) {
+            return handleResponse(res, 404, false, 'No files uploaded');
+        }
+
+        const file = req.file as Express.Multer.File;
+
+        const fileModified = {
+            buffer: file.buffer,
+            name: Date.now().toString(),
+            mimetype: file.mimetype,
+        }
+
+        const path = await uploadFileToBlob(StorageContainer.CREDENTIALS, fileModified)
+
         const createdCredentials = await Credential.create({ name, filePath: path, providerId })
 
         successResponse(res, 'success', createdCredentials)
@@ -270,7 +320,9 @@ export const me = async (req: Request, res: Response) => {
 export const dashboard = async (req: Request, res: Response) => {
     let { id, email } = req.user;
 
-    let { monthsAgo } = req.query;
+    console.log(id, email);
+
+    let { monthsAgo = 4 } = req.query;
 
     const xMonthsAgo = new Date();
     xMonthsAgo.setMonth(xMonthsAgo.getMonth() - Number(monthsAgo));
@@ -282,23 +334,40 @@ export const dashboard = async (req: Request, res: Response) => {
 
             include: [{
                 model: Provider,
-                attributes: ['id', 'fullName', 'image', 'gender']
+                attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
+                include: [{
+                    model: Appointment,
+                    where: {
+                        datetime: {
+                            [Op.gt]: xMonthsAgo,
+                        }
+                    }
+                }]
             }, {
                 model: Seeker,
-                attributes: ['id', 'firstName', 'lastName', 'image', 'gender']
+                attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
+                include: [{
+                    model: Appointment,
+                    where: {
+                        datetime: {
+                            [Op.gt]: xMonthsAgo,
+                        }
+                    }
+                }]
             }, {
                 model: Centre,
-                attributes: ['id', 'name', 'regNo', 'image', 'address']
+                attributes: ['id', 'name', 'regNo', 'image', 'address'],
+                // include: [{
+                //     model: Appointment,
+                //     where: {
+                //         datetime: {
+                //             [Op.gt]: xMonthsAgo,
+                //         }
+                //     }
+                // }]
             }, {
                 model: Wallet,
                 attributes: ['id', 'balance', 'currency']
-            }, {
-                model: Appointment,
-                where: {
-                    datetime: {
-                        [Op.gt]: xMonthsAgo,
-                    }
-                }
             }]
         });
 
@@ -311,29 +380,33 @@ export const dashboard = async (req: Request, res: Response) => {
 
 
         return successResponse(res, 'success', user);
-    } catch (err) {
-        return errorResponse(res, 'error', err);
+    } catch (error) {
+        errorResponse(res, 'error', error);
     }
 }
 
 
 export const getProfileById = async (req: Request, res: Response) => {
-    let { id } = req.params;
+    let { providerId } = req.params;
 
     try {
-        const user = await Provider.findOne({
+        const provider = await Provider.findOne({
+            where: { id: providerId },
             include: [
                 {
-                    model: User
+                    model: User,
+                    attributes: {
+                        exclude: ['password']
+                    }
+                },
+                {
+                    model: Specialization
                 },
                 {
                     model: Centre,
                 },
                 {
                     model: Availability
-                },
-                {
-                    model: Appointment
                 },
                 {
                     model: Qualification
@@ -343,6 +416,26 @@ export const getProfileById = async (req: Request, res: Response) => {
                 }
             ]
         })
+
+
+        const countRating = await Feedback.count({ where: { providerId: provider?.id } })
+        const addRating = await Feedback.sum('rating', {
+            where: {
+                providerId: provider?.id
+            }
+        }) ?? 0;
+
+        let avgRating: number = 0
+
+        if (countRating > 0)
+            avgRating = addRating / countRating;
+
+        const countFavourites = await Favorite.count({ where: { providerId: provider?.id } })
+
+        provider?.setDataValue('avgRating', avgRating);
+        provider?.setDataValue('favourites', countFavourites);
+
+        return successResponse(res, 'success', provider);
     } catch (error) {
         return errorResponse(res, 'error', error);
     }
@@ -350,9 +443,10 @@ export const getProfileById = async (req: Request, res: Response) => {
 
 
 export const getProviders = async (req: Request, res: Response) => {
-    let { specialization } = req.query;
+    let { specialization, category } = req.query;
 
     let spec
+    let whereCondition: { [key: string]: any } = {}
 
     if (specialization) {
         spec = await Specialization.findOne({
@@ -360,26 +454,52 @@ export const getProviders = async (req: Request, res: Response) => {
                 name: specialization
             }
         })
+
+        whereCondition.specializationId = spec?.id;
     }
 
-    let whereCondition = spec ? {
-        specialization: spec.id
-    } : {}
-
+    if (category) {
+        whereCondition.category = category;
+    }
 
     try {
         const providers = await Provider.findAll({
             where: whereCondition,
+
             include: [
                 {
-                    model: User
+                    model: User,
+                    attributes: {
+                        exclude: ['updatedAt', 'password']
+                    },
                 },
                 {
                     model: Specialization
-                    //Include ratings also
                 }
+
             ]
         })
+
+        for (let i = 0; i < providers.length; i++) {
+            const provider = providers[i];
+
+            const countRating = await Feedback.count({ where: { providerId: provider.id } })
+            const addRating = await Feedback.sum('rating', {
+                where: {
+                    providerId: provider.id
+                }
+            }) ?? 0;
+
+            let avgRating: number = 0
+
+            if (countRating > 0)
+                avgRating = addRating / countRating;
+
+            const countFavourites = await Favorite.count({ where: { providerId: provider.id } })
+
+            provider.setDataValue('avgRating', avgRating);
+            provider.setDataValue('favourites', countFavourites);
+        }
 
 
         return successResponse(res, 'success', providers);

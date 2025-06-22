@@ -38,6 +38,13 @@ export class User extends Model {
     email!: string;
 
 
+    @AllowNull(false)
+    @Default(false)
+    @Column(DataType.BOOLEAN)
+    emailVerified!: boolean;
+
+
+
 
     @AllowNull(false)
     @Unique
@@ -70,7 +77,7 @@ export class User extends Model {
 
 
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.STRING)
     deviceToken!: string;
 
@@ -97,11 +104,6 @@ export class User extends Model {
 
     @HasOne(() => AccountDetails, { onDelete: 'CASCADE' })
     account!: AccountDetails
-
-
-    @HasMany(() => Feedback, { onDelete: 'CASCADE' })
-    feedback!: Feedback
-
 
     @HasOne(() => Wallet, { onDelete: 'CASCADE' })
     wallet!: Wallet

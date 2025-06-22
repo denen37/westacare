@@ -1,8 +1,8 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { User } from './Models';
+import { Centre, Provider, Seeker } from './Models';
 
 
-@Table({ updatedAt: false, tableName: 'ratings' })
+@Table({ updatedAt: false, tableName: 'feedbacks' })
 export class Feedback extends Model {
     @PrimaryKey
     @AutoIncrement
@@ -25,24 +25,34 @@ export class Feedback extends Model {
 
 
 
-    @ForeignKey(() => User)
+    @ForeignKey(() => Seeker)
     @AllowNull(false)
     @Column(DataType.BIGINT)
     seekerId!: number;
 
 
-    @BelongsTo(() => User, { onDelete: 'CASCADE' })
-    seeker!: User
+    @BelongsTo(() => Seeker, { onDelete: 'CASCADE' })
+    seeker!: Seeker
 
 
 
-    @ForeignKey(() => User)
-    @AllowNull(false)
+    @ForeignKey(() => Provider)
+    @AllowNull(true)
     @Column(DataType.BIGINT)
-    providerCentreId!: number;
+    providerId!: number;
+
+    @BelongsTo(() => Provider, { onDelete: 'CASCADE' })
+    provider!: Provider
 
 
-    @BelongsTo(() => User, { onDelete: 'CASCADE' })
-    providerCentre!: User
+    @ForeignKey(() => Centre)
+    @AllowNull(true)
+    @Column(DataType.BIGINT)
+    centreId!: number;
+
+
+
+    @BelongsTo(() => Centre, { onDelete: 'CASCADE' })
+    centre!: Centre
 
 }

@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { MedicalInfo, TestReport, User, Appointment, Prescription, MedicalHistory, Referral } from './Models';
+import { MedicalInfo, TestReport, User, Appointment, Prescription, MedicalHistory, Referral, Provider, Favorite } from './Models';
 
 export enum Gender {
     MALE = 'male',
@@ -104,4 +104,7 @@ export class Seeker extends Model {
 
     @HasMany(() => Referral, { onDelete: 'CASCADE' })
     referrals!: Referral[]
+
+    @BelongsToMany(() => Provider, () => Favorite)
+    favoriteProviders!: Provider[]
 }

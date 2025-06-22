@@ -9,9 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Availability = void 0;
+exports.Availability = exports.DaysOfWeek = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const Models_1 = require("./Models");
+var DaysOfWeek;
+(function (DaysOfWeek) {
+    DaysOfWeek[DaysOfWeek["Monday"] = 1] = "Monday";
+    DaysOfWeek[DaysOfWeek["Tuesday"] = 2] = "Tuesday";
+    DaysOfWeek[DaysOfWeek["Wednesday"] = 3] = "Wednesday";
+    DaysOfWeek[DaysOfWeek["Thursday"] = 4] = "Thursday";
+    DaysOfWeek[DaysOfWeek["Friday"] = 5] = "Friday";
+    DaysOfWeek[DaysOfWeek["Saturday"] = 6] = "Saturday";
+    DaysOfWeek[DaysOfWeek["Sunday"] = 0] = "Sunday";
+})(DaysOfWeek || (exports.DaysOfWeek = DaysOfWeek = {}));
 let Availability = class Availability extends sequelize_typescript_1.Model {
 };
 exports.Availability = Availability;
@@ -23,14 +33,14 @@ __decorate([
 ], Availability.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(20)),
-    __metadata("design:type", String)
-], Availability.prototype, "startDayOfWeek", void 0);
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TINYINT),
+    __metadata("design:type", Number)
+], Availability.prototype, "startDay", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(20)),
-    __metadata("design:type", String)
-], Availability.prototype, "endDayOfWeek", void 0);
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TINYINT),
+    __metadata("design:type", Number)
+], Availability.prototype, "endDay", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(true),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TIME),

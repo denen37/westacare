@@ -19,6 +19,7 @@ export class AccountDetails extends Model {
 
 
     @AllowNull(false)
+    @Unique
     @Column(DataType.STRING(20))
     number!: string
 
@@ -27,6 +28,16 @@ export class AccountDetails extends Model {
     @AllowNull(false)
     @Column(DataType.STRING)
     bank!: string
+
+
+    @AllowNull(false)
+    @Column(DataType.STRING)
+    recipientCode!: string
+
+
+    @AllowNull(false)
+    @Column(DataType.STRING(10))
+    currency!: string
 
 
     @ForeignKey(() => User)

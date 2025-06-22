@@ -50,6 +50,21 @@ const sequelize = new sequelize_typescript_1.Sequelize(configSetup_1.default.DBN
     logging: false,
     models: Object.values(models),
 });
+// const sequelize = new Sequelize({
+//     dialect: 'mssql',
+//     host: config.DBHOST,
+//     port: config.DBPORT,
+//     username: config.DBUSERNAME,
+//     password: config.DBPASSWORD,
+//     database: config.DBNAME,
+//     models: Object.values(models),
+//     dialectOptions: {
+//         options: {
+//             encrypt: true,
+//             trustServerCertificate: false,
+//         },
+//     },
+// });
 sequelize.authenticate().then(() => {
     console.log('Database connection successful!.');
 }).catch((error) => {

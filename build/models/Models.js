@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Specialization = exports.Experience = exports.Wallet = exports.Credential = exports.Charge = exports.Registration = exports.OTP = exports.Reminder = exports.Feedback = exports.AccountDetails = exports.Transaction = exports.Notification = exports.PrescriptionItem = exports.Prescription = exports.Referral = exports.Appointment = exports.TestReport = exports.MedicalHistory = exports.MedicalInfo = exports.Qualification = exports.Availability = exports.CentreDocument = exports.StaffDetails = exports.Infrastructure = exports.RegulatoryCompliance = exports.Management = exports.Centre = exports.Provider = exports.Seeker = exports.User = void 0;
+exports.Transfer = exports.Favorite = exports.Specialization = exports.Experience = exports.Wallet = exports.Credential = exports.Charge = exports.Registration = exports.OTP = exports.Reminder = exports.Feedback = exports.AccountDetails = exports.Transaction = exports.Notification = exports.PrescriptionItem = exports.Prescription = exports.Referral = exports.Appointment = exports.TestReport = exports.MedicalHistory = exports.MedicalInfo = exports.Qualification = exports.Availability = exports.CentreDocument = exports.StaffDetails = exports.Infrastructure = exports.RegulatoryCompliance = exports.Management = exports.Centre = exports.Provider = exports.Seeker = exports.User = void 0;
 const User_1 = require("./User");
 Object.defineProperty(exports, "User", { enumerable: true, get: function () { return User_1.User; } });
 const Seeker_1 = require("./Seeker");
@@ -61,3 +61,7 @@ const Experience_1 = require("./Experience");
 Object.defineProperty(exports, "Experience", { enumerable: true, get: function () { return Experience_1.Experience; } });
 const Specialization_1 = require("./Specialization");
 Object.defineProperty(exports, "Specialization", { enumerable: true, get: function () { return Specialization_1.Specialization; } });
+const Favorite_1 = require("./Favorite");
+Object.defineProperty(exports, "Favorite", { enumerable: true, get: function () { return Favorite_1.Favorite; } });
+const Transfer_1 = require("./Transfer");
+Object.defineProperty(exports, "Transfer", { enumerable: true, get: function () { return Transfer_1.Transfer; } });

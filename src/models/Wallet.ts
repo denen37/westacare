@@ -30,6 +30,11 @@ export class Wallet extends Model {
     currency!: string;
 
 
+    @AllowNull(true)
+    @Column(DataType.STRING)
+    pin!: string;
+
+
 
     @BelongsTo(() => User)
     user!: User;

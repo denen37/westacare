@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.storeDeviceToken = exports.readNotification = exports.deleteNotification = exports.getNotificationById = exports.getAllNotifications = void 0;
+exports.refreshDeviceToken = exports.storeDeviceToken = exports.readNotification = exports.deleteNotification = exports.getNotificationById = exports.getAllNotifications = void 0;
 const Models_1 = require("../models/Models");
 const modules_1 = require("../utils/modules");
 const pagination_1 = require("../utils/pagination");
@@ -105,3 +105,17 @@ const storeDeviceToken = (req, res) => {
     }
 };
 exports.storeDeviceToken = storeDeviceToken;
+const refreshDeviceToken = (req, res) => {
+    const { id } = req.user;
+    const { deviceToken } = req.body;
+    try {
+        const updated = Models_1.User.update({ deviceToken }, {
+            where: { id }
+        });
+        return (0, modules_1.successResponse)(res, "success", "Device token updated sucessfully");
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, "error", error);
+    }
+};
+exports.refreshDeviceToken = refreshDeviceToken;

@@ -25,7 +25,7 @@ __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(100)),
     __metadata("design:type", String)
-], TestReport.prototype, "reportName", void 0);
+], TestReport.prototype, "title", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(100)),
@@ -33,13 +33,13 @@ __decorate([
 ], TestReport.prototype, "doctorName", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATE),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATEONLY),
     __metadata("design:type", Date)
-], TestReport.prototype, "timestamp", void 0);
+], TestReport.prototype, "date", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(true),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATE),
-    __metadata("design:type", Date)
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
 ], TestReport.prototype, "description", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(true),
@@ -53,9 +53,19 @@ __decorate([
     __metadata("design:type", Number)
 ], TestReport.prototype, "seekerId", void 0);
 __decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Provider),
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
+    __metadata("design:type", Number)
+], TestReport.prototype, "providerId", void 0);
+__decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Seeker, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.Seeker)
 ], TestReport.prototype, "seeker", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Provider, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Provider)
+], TestReport.prototype, "provider", void 0);
 exports.TestReport = TestReport = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true, tableName: 'test_reports' })
 ], TestReport);

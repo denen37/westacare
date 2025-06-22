@@ -110,3 +110,19 @@ export const storeDeviceToken = (req: Request, res: Response) => {
         return errorResponse(res, "error", error)
     }
 }
+
+export const refreshDeviceToken = (req: Request, res: Response) => {
+    const { id } = req.user
+
+    const { deviceToken } = req.body;
+
+    try {
+        const updated = User.update({ deviceToken }, {
+            where: { id }
+        })
+
+        return successResponse(res, "success", "Device token updated sucessfully")
+    } catch (error) {
+        return errorResponse(res, "error", error)
+    }
+}

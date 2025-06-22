@@ -32,25 +32,35 @@ __decorate([
     __metadata("design:type", String)
 ], Feedback.prototype, "review", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.User),
+    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Seeker),
     (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
     __metadata("design:type", Number)
 ], Feedback.prototype, "seekerId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.User, { onDelete: 'CASCADE' }),
-    __metadata("design:type", Models_1.User)
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Seeker, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Seeker)
 ], Feedback.prototype, "seeker", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.User),
-    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Provider),
+    (0, sequelize_typescript_1.AllowNull)(true),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
     __metadata("design:type", Number)
-], Feedback.prototype, "providerCentreId", void 0);
+], Feedback.prototype, "providerId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.User, { onDelete: 'CASCADE' }),
-    __metadata("design:type", Models_1.User)
-], Feedback.prototype, "providerCentre", void 0);
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Provider, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Provider)
+], Feedback.prototype, "provider", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Centre),
+    (0, sequelize_typescript_1.AllowNull)(true),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
+    __metadata("design:type", Number)
+], Feedback.prototype, "centreId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => Models_1.Centre, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Centre)
+], Feedback.prototype, "centre", void 0);
 exports.Feedback = Feedback = __decorate([
-    (0, sequelize_typescript_1.Table)({ updatedAt: false, tableName: 'ratings' })
+    (0, sequelize_typescript_1.Table)({ updatedAt: false, tableName: 'feedbacks' })
 ], Feedback);

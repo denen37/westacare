@@ -53,6 +53,8 @@ const getConfig = () => {
         EMAIL_SERVICE: process.env.EMAIL_SERVICE,
         EMAIL_USER: process.env.EMAIL_USER,
         OTP_EXPIRY_TIME: Number(process.env.OTP_EXPIRY_TIME),
+        PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
+        AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
         PUBLIC_ROUTES: [
             '/',
             '/api',
@@ -61,7 +63,8 @@ const getConfig = () => {
             '/api/auth/provider/register',
             '/api/auth/refresh-token',
             '/api/auth/logout',
-            '/api/auth/verify-email',
+            '/api/auth/send-otp',
+            '/api/auth/verify-otp',
             '/api/auth/forgot-password',
             '/api/auth/reset-password',
             '/api/auth/verify-token',

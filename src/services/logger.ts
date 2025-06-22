@@ -1,23 +1,25 @@
-import winston from 'winston';
+import { format } from 'date-fns'
 
-// Define log format
-const logFormat = winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message }) => {
-        return `[${timestamp}] ${level.toUpperCase()}: ${message}`;
-    })
-);
+import fs from 'fs'
+import fsPromises from 'fs/promises'
+import path from 'path'
 
-// Create logger instance
-const logger = winston.createLogger({
-    level: 'info', 
-    format: logFormat,
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'logs/combined.log' })
-    ]
-});
+const log = async (log: string) => {
+    const datetime = `${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}`
 
+    const logItem = `${datetime}\t${log}\n`;
 
-export default logger;
+    console.log(logItem);
+
+    try {
+        if (!fs.existsSync(path.join(__dirname, '../logs'))) {
+            await fsPromises.mkdir(path.join(__dirname, '../logs'));
+        }
+
+        await fsPromises.appendFile(path.join(__dirname, '../logs', 'server.log'), logItem);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export default log

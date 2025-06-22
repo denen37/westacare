@@ -28,6 +28,8 @@ import { Wallet } from './Wallet'
 import { MedicalHistory } from './MedicalHistory'
 import { Experience } from './Experience'
 import { Specialization } from './Specialization'
+import { Favorite } from './Favorite'
+import { Transfer } from './Transfer'
 
 
 export {
@@ -60,5 +62,7 @@ export {
     Credential,
     Wallet,
     Experience,
-    Specialization
+    Specialization,
+    Favorite,
+    Transfer
 }

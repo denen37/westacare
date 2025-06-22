@@ -1,7 +1,13 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { Gender } from './Seeker';
-import { User, Centre, Qualification, Appointment, Prescription, Availability, Registration, Specialization } from './Models';
+import { Gender, Seeker } from './Seeker';
+import { User, Centre, Qualification, Appointment, Prescription, Availability, Registration, Specialization, Favorite, Experience } from './Models';
 import { Charge } from './Charge';
+
+export enum ProviderType {
+    DOCTOR = 'doctor',
+    PHARMACIST = 'pharmacist',
+    LAB_SCIENTIST = 'lab scientist',
+}
 
 @Table({ timestamps: true, tableName: 'providers' })
 export class Provider extends Model {
@@ -24,6 +30,12 @@ export class Provider extends Model {
     @ForeignKey(() => Specialization)
     @Column(DataType.INTEGER)
     specializationId!: number;
+
+
+    @AllowNull(false)
+    @Default(ProviderType.DOCTOR)
+    @Column(DataType.ENUM(...Object.values(ProviderType)))
+    category!: string;
 
 
 
@@ -131,6 +143,13 @@ export class Provider extends Model {
     @HasOne(() => Charge, { onDelete: 'CASCADE' })
     charge!: Charge
 
+
+    @HasOne(() => Experience, { onDelete: 'CASCADE' })
+    experience!: Experience
+
     @HasMany(() => Appointment, { onDelete: 'CASCADE' })
     appointments!: Appointment[]
+
+    @BelongsToMany(() => Seeker, () => Favorite)
+    favoriteSeekers!: Seeker[]
 }

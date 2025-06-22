@@ -117,6 +117,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => Models_1.Referral, { onDelete: 'CASCADE' }),
     __metadata("design:type", Array)
 ], Seeker.prototype, "referrals", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsToMany)(() => Models_1.Provider, () => Models_1.Favorite),
+    __metadata("design:type", Array)
+], Seeker.prototype, "favoriteProviders", void 0);
 exports.Seeker = Seeker = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true, tableName: 'seekers' })
 ], Seeker);

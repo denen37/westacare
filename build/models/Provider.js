@@ -9,11 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Provider = void 0;
+exports.Provider = exports.ProviderType = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const Seeker_1 = require("./Seeker");
 const Models_1 = require("./Models");
 const Charge_1 = require("./Charge");
+var ProviderType;
+(function (ProviderType) {
+    ProviderType["DOCTOR"] = "doctor";
+    ProviderType["PHARMACIST"] = "pharmacist";
+    ProviderType["LAB_SCIENTIST"] = "lab scientist";
+})(ProviderType || (exports.ProviderType = ProviderType = {}));
 let Provider = class Provider extends sequelize_typescript_1.Model {
 };
 exports.Provider = Provider;
@@ -36,6 +42,12 @@ __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.INTEGER),
     __metadata("design:type", Number)
 ], Provider.prototype, "specializationId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)(ProviderType.DOCTOR),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM(...Object.values(ProviderType))),
+    __metadata("design:type", String)
+], Provider.prototype, "category", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(100)),
@@ -136,9 +148,17 @@ __decorate([
     __metadata("design:type", Charge_1.Charge)
 ], Provider.prototype, "charge", void 0);
 __decorate([
+    (0, sequelize_typescript_1.HasOne)(() => Models_1.Experience, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Models_1.Experience)
+], Provider.prototype, "experience", void 0);
+__decorate([
     (0, sequelize_typescript_1.HasMany)(() => Models_1.Appointment, { onDelete: 'CASCADE' }),
     __metadata("design:type", Array)
 ], Provider.prototype, "appointments", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsToMany)(() => Seeker_1.Seeker, () => Models_1.Favorite),
+    __metadata("design:type", Array)
+], Provider.prototype, "favoriteSeekers", void 0);
 exports.Provider = Provider = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true, tableName: 'providers' })
 ], Provider);

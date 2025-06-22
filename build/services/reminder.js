@@ -34,7 +34,7 @@ const scheduleReminder = (user, reminder) => __awaiter(void 0, void 0, void 0, f
             times.forEach(time => {
                 const hours = time.split('-')[0];
                 const minutes = time.split('-')[1];
-                let notification = (0, messages_1.medicineReminderNotification)(reminder, `${hours.padStart(2, '0')} : ${minutes.padStart(2, '0')}`);
+                let notification = (0, messages_1.medicineReminderNotification)(reminder, `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`);
                 node_schedule_1.default.scheduleJob(`*/${minutes} ${hours} * * *`, () => (0, notification_1.sendNotification)(user, notification));
             });
         }

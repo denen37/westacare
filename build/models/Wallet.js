@@ -39,6 +39,11 @@ __decorate([
     __metadata("design:type", String)
 ], Wallet.prototype, "currency", void 0);
 __decorate([
+    (0, sequelize_typescript_1.AllowNull)(true),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
+], Wallet.prototype, "pin", void 0);
+__decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => Models_1.User),
     __metadata("design:type", Models_1.User)
 ], Wallet.prototype, "user", void 0);

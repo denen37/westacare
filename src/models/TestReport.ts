@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { Seeker } from './Models';
+import { Provider, Seeker } from './Models';
 
 
 
@@ -14,7 +14,7 @@ export class TestReport extends Model {
 
     @AllowNull(false)
     @Column(DataType.STRING(100))
-    reportName!: string
+    title!: string
 
 
 
@@ -25,14 +25,14 @@ export class TestReport extends Model {
 
 
     @AllowNull(false)
-    @Column(DataType.DATE)
-    timestamp!: Date
+    @Column(DataType.DATEONLY)
+    date!: Date
 
 
 
     @AllowNull(true)
-    @Column(DataType.DATE)
-    description!: Date
+    @Column(DataType.STRING)
+    description!: string
 
 
 
@@ -48,6 +48,16 @@ export class TestReport extends Model {
     seekerId!: number;
 
 
+    @ForeignKey(() => Provider)
+    @AllowNull(false)
+    @Column(DataType.BIGINT)
+    providerId!: number;
+
+
+
     @BelongsTo(() => Seeker, { onDelete: 'CASCADE' })
     seeker!: Seeker
+
+    @BelongsTo(() => Provider, { onDelete: 'CASCADE' })
+    provider!: Provider
 }

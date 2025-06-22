@@ -9,9 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Transaction = exports.TransactionType = void 0;
+exports.Transaction = exports.TransactionType = exports.TransactionStatus = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const Models_1 = require("./Models");
+var TransactionStatus;
+(function (TransactionStatus) {
+    TransactionStatus["SUCCESS"] = "success";
+    TransactionStatus["FAILED"] = "failed";
+})(TransactionStatus || (exports.TransactionStatus = TransactionStatus = {}));
 var TransactionType;
 (function (TransactionType) {
     TransactionType["DEBIT"] = "debit";
@@ -28,7 +33,7 @@ __decorate([
 ], Transaction.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.FLOAT),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DECIMAL),
     __metadata("design:type", Number)
 ], Transaction.prototype, "amount", void 0);
 __decorate([
@@ -39,19 +44,36 @@ __decorate([
 ], Transaction.prototype, "type", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM(TransactionStatus.SUCCESS, TransactionStatus.FAILED)),
+    __metadata("design:type", String)
+], Transaction.prototype, "status", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
+], Transaction.prototype, "channel", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)('NGN'),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
+    __metadata("design:type", String)
+], Transaction.prototype, "currency", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.DATE),
     __metadata("design:type", Date)
-], Transaction.prototype, "date", void 0);
+], Transaction.prototype, "timestamp", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(true),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
     __metadata("design:type", String)
 ], Transaction.prototype, "description", void 0);
 __decorate([
-    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.AllowNull)(true),
+    sequelize_typescript_1.Unique,
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(200)),
     __metadata("design:type", String)
-], Transaction.prototype, "ref", void 0);
+], Transaction.prototype, "reference", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => Models_1.User),
     (0, sequelize_typescript_1.AllowNull)(false),

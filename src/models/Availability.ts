@@ -2,6 +2,16 @@ import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNu
 
 import { Centre, Provider } from './Models';
 
+export enum DaysOfWeek {
+    Monday = 1,
+    Tuesday = 2,
+    Wednesday = 3,
+    Thursday = 4,
+    Friday = 5,
+    Saturday = 6,
+    Sunday = 0
+}
+
 @Table({ timestamps: true, tableName: 'availabilities' })
 export class Availability extends Model {
     @PrimaryKey
@@ -12,15 +22,15 @@ export class Availability extends Model {
 
 
     @AllowNull(false)
-    @Column(DataType.STRING(20))
-    startDayOfWeek!: string;
+    @Column(DataType.TINYINT)
+    startDay!: number;
 
 
 
 
     @AllowNull(false)
-    @Column(DataType.STRING(20))
-    endDayOfWeek!: string;
+    @Column(DataType.TINYINT)
+    endDay!: number;
 
 
 

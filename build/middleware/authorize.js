@@ -25,21 +25,26 @@ const isAuthorized = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     let isPublicRoute = publicRoutes.includes(route);
     if (isPublicRoute)
         return next();
-    let token = req.headers.authorization;
-    if (!token)
-        return (0, modules_1.handleResponse)(res, 401, false, `Access Denied / Unauthorized request`);
-    token = token.split(' ')[1]; // Remove Bearer from string 
-    if (token === 'null' || !token)
-        return (0, modules_1.handleResponse)(res, 401, false, `Unauthorized request`);
-    let verified = (0, jsonwebtoken_1.verify)(token, configSetup_1.default.TOKEN_SECRET);
-    if (!verified)
-        return (0, modules_1.handleResponse)(res, 401, false, `Unauthorized request`);
-    if (verified.admin === true) {
-        req.admin = verified;
+    try {
+        let token = req.headers.authorization;
+        if (!token)
+            return (0, modules_1.handleResponse)(res, 401, false, `Access Denied / Unauthorized request`);
+        token = token.split(' ')[1]; // Remove Bearer from string 
+        if (token === 'null' || !token)
+            return (0, modules_1.handleResponse)(res, 401, false, `Unauthorized request`);
+        let verified = (0, jsonwebtoken_1.verify)(token, configSetup_1.default.TOKEN_SECRET);
+        if (!verified)
+            return (0, modules_1.handleResponse)(res, 401, false, `Unauthorized request`);
+        if (verified.admin === true) {
+            req.admin = verified;
+        }
+        else {
+            req.user = verified;
+        }
+        next();
     }
-    else {
-        req.user = verified;
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
     }
-    next();
 });
 exports.isAuthorized = isAuthorized;

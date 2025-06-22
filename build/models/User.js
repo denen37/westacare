@@ -49,6 +49,12 @@ __decorate([
 ], User.prototype, "email", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.Default)(false),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BOOLEAN),
+    __metadata("design:type", Boolean)
+], User.prototype, "emailVerified", void 0);
+__decorate([
+    (0, sequelize_typescript_1.AllowNull)(false),
     sequelize_typescript_1.Unique,
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING(20)),
     __metadata("design:type", String)
@@ -74,7 +80,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    (0, sequelize_typescript_1.AllowNull)(false),
+    (0, sequelize_typescript_1.AllowNull)(true),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.STRING),
     __metadata("design:type", String)
 ], User.prototype, "deviceToken", void 0);
@@ -102,10 +108,6 @@ __decorate([
     (0, sequelize_typescript_1.HasOne)(() => Models_1.AccountDetails, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.AccountDetails)
 ], User.prototype, "account", void 0);
-__decorate([
-    (0, sequelize_typescript_1.HasMany)(() => Models_1.Feedback, { onDelete: 'CASCADE' }),
-    __metadata("design:type", Models_1.Feedback)
-], User.prototype, "feedback", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasOne)(() => Models_1.Wallet, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.Wallet)
