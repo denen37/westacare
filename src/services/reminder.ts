@@ -3,7 +3,7 @@ import { Recurrence, Reminder, ReminderStatus } from "../models/Reminder";
 import schedule from "node-schedule";
 import { Op } from "sequelize";
 import moment from 'moment';
-import { sendNotification } from "./notification";
+import { sendPushNotification } from "./notification";
 import { medicineReminderNotification } from "../utils/messages";
 import { Seeker } from "../models/Seeker";
 import { User } from "../models/User";
@@ -27,7 +27,13 @@ export const scheduleReminder = async (user: User, reminder: Reminder) => {
 
                 let notification = medicineReminderNotification(reminder, `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`)
 
-                schedule.scheduleJob(`*/${minutes} ${hours} * * *`, () => sendNotification(user, notification));
+                schedule.scheduleJob(`*/${minutes} ${hours} * * *`, () =>
+                    sendPushNotification(
+                        user.deviceToken,
+                        notification.title,
+                        notification.title,
+                        {}
+                    ));
 
             })
 
@@ -49,7 +55,12 @@ export const scheduleReminder = async (user: User, reminder: Reminder) => {
 
                     let notification = medicineReminderNotification(reminder, date.toLocaleTimeString())
 
-                    schedule.scheduleJob(date, () => sendNotification(user, notification));
+                    schedule.scheduleJob(date, () => sendPushNotification(
+                        user.deviceToken,
+                        notification.title,
+                        notification.body,
+                        {}
+                    ));
                 }
             })
         }

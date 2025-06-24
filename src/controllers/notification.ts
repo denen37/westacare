@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Notification, User } from "../models/Models";
 import { errorResponse, handleResponse, successResponse } from "../utils/modules";
-import { pushNotification } from "../services/notification";
 import { paginate } from "../utils/pagination"
 
 

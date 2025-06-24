@@ -55,6 +55,7 @@ const getConfig = () => {
         OTP_EXPIRY_TIME: Number(process.env.OTP_EXPIRY_TIME),
         PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
         AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
+        // FIREBASE_ADMIN_CREDENTIALS: process.env.FIREBASE_ADMIN_CREDENTIALS,
         PUBLIC_ROUTES: [
             '/',
             '/api',
