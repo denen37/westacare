@@ -11,7 +11,8 @@ const sequelize = new Sequelize(
     config.DBPASSWORD,
     {
         host: config.DBHOST,
-        dialect: 'mysql',
+        dialect: (config.DBDIALECT as any) || 'mysql',
+        port: config.DBPORT,
         dialectOptions: {
             ssl: false,
         },

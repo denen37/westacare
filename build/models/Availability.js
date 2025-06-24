@@ -33,12 +33,12 @@ __decorate([
 ], Availability.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TINYINT),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.SMALLINT),
     __metadata("design:type", Number)
 ], Availability.prototype, "startDay", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TINYINT),
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.SMALLINT),
     __metadata("design:type", Number)
 ], Availability.prototype, "endDay", void 0);
 __decorate([

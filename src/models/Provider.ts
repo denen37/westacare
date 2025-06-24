@@ -26,7 +26,6 @@ export class Provider extends Model {
 
 
     @AllowNull(false)
-    @Default(1)
     @ForeignKey(() => Specialization)
     @Column(DataType.INTEGER)
     specializationId!: number;

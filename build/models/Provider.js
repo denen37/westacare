@@ -37,7 +37,6 @@ __decorate([
 ], Provider.prototype, "title", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),
-    (0, sequelize_typescript_1.Default)(1),
     (0, sequelize_typescript_1.ForeignKey)(() => Models_1.Specialization),
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.INTEGER),
     __metadata("design:type", Number)

@@ -22,14 +22,14 @@ export class Availability extends Model {
 
 
     @AllowNull(false)
-    @Column(DataType.TINYINT)
+    @Column(DataType.SMALLINT)
     startDay!: number;
 
 
 
 
     @AllowNull(false)
-    @Column(DataType.TINYINT)
+    @Column(DataType.SMALLINT)
     endDay!: number;
 
 

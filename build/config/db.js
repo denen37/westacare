@@ -43,7 +43,8 @@ const env = process.env.NODE_ENV || "development";
 const dbConfig = configSetup_1.default[env];
 const sequelize = new sequelize_typescript_1.Sequelize(configSetup_1.default.DBNAME || 'test', configSetup_1.default.DBUSERNAME || 'root', configSetup_1.default.DBPASSWORD, {
     host: configSetup_1.default.DBHOST,
-    dialect: 'mysql',
+    dialect: configSetup_1.default.DBDIALECT || 'mysql',
+    port: configSetup_1.default.DBPORT,
     dialectOptions: {
         ssl: false,
     },
