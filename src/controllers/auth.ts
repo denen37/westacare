@@ -228,4 +228,40 @@ export const sendOTP = async (req: Request, res: Response) => {
     }
 }
 
+export const resetPassword = async (req: Request, res: Response) => {
+    let { email, otp, newPassword, confirmPassword } = req.body;
+
+    if (!email || !otp || !newPassword || !confirmPassword) {
+        return handleResponse(res, 400, false, 'Please provide all required fields')
+    }
+
+    if (newPassword !== confirmPassword) {
+        return handleResponse(res, 400, false, 'Passwords do not match')
+    }
+
+    try {
+        let otpRecord = await OTP.findOne({ where: { email, otp } })
+
+        if (!otpRecord) return handleResponse(res, 404, false, 'OTP not found')
+
+        if (otpRecord.expiresAt < new Date()) return handleResponse(res, 401, false, 'OTP expired')
+
+        let user = await User.findOne({ where: { email } })
+
+        if (!user) return handleResponse(res, 404, false, 'User not found')
+
+        let hashPassword = await bcrypt.hash(newPassword, 10)
+
+        user.password = hashPassword
+
+        await user.save()
+
+        await OTP.destroy({ where: { email } })
+
+        return successResponse(res, 'Password reset successful')
+    } catch (error) {
+        return errorResponse(res, 'error', error)
+    }
+}
+
 

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendOTP = exports.verifyOTP = exports.login = exports.registerProvider = exports.registerSeeker = void 0;
+exports.resetPassword = exports.sendOTP = exports.verifyOTP = exports.login = exports.registerProvider = exports.registerSeeker = void 0;
 const modules_1 = require("../utils/modules");
 const Models_1 = require("../models/Models");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -170,3 +170,31 @@ const sendOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.sendOTP = sendOTP;
+const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { email, otp, newPassword, confirmPassword } = req.body;
+    if (!email || !otp || !newPassword || !confirmPassword) {
+        return (0, modules_1.handleResponse)(res, 400, false, 'Please provide all required fields');
+    }
+    if (newPassword !== confirmPassword) {
+        return (0, modules_1.handleResponse)(res, 400, false, 'Passwords do not match');
+    }
+    try {
+        let otpRecord = yield Models_1.OTP.findOne({ where: { email, otp } });
+        if (!otpRecord)
+            return (0, modules_1.handleResponse)(res, 404, false, 'OTP not found');
+        if (otpRecord.expiresAt < new Date())
+            return (0, modules_1.handleResponse)(res, 401, false, 'OTP expired');
+        let user = yield Models_1.User.findOne({ where: { email } });
+        if (!user)
+            return (0, modules_1.handleResponse)(res, 404, false, 'User not found');
+        let hashPassword = yield bcryptjs_1.default.hash(newPassword, 10);
+        user.password = hashPassword;
+        yield user.save();
+        yield Models_1.OTP.destroy({ where: { email } });
+        return (0, modules_1.successResponse)(res, 'Password reset successful');
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.resetPassword = resetPassword;

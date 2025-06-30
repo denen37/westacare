@@ -25,6 +25,7 @@ router.post('/auth/send-otp', auth_1.sendOTP);
 router.post('/auth/verify-otp', auth_1.verifyOTP);
 router.post('/auth/login', auth_1.login);
 router.get('/auth/me', profile_1.me);
+router.post('/auth/reset-password', auth_1.resetPassword);
 router.get('/dashboard', (0, allowRoles_1.allowRoles)(User_1.UserRole.SEEKER, User_1.UserRole.PROVIDER), profile_1.dashboard);
 router.post('/providers/upload-avatar', (0, allowRoles_1.allowRoles)(User_1.UserRole.SEEKER, User_1.UserRole.PROVIDER), upload_1.uploads.single('image'), profile_1.uploadAvatar);
 router.post('/providers/create-profile', (0, allowRoles_1.allowRoles)(User_1.UserRole.PROVIDER), profile_1.createProviderProfile1);

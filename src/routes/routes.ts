@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 import { addAccount, getAccounts, getBanks } from "../controllers/account";
 import { cancelAppointment, completeAppointment, createAppointment, getAppointmentById, getAppointments, rescheduleAppointment } from "../controllers/appointment";
-import { registerSeeker, registerProvider, sendOTP, verifyOTP, login } from "../controllers/auth";
+import { registerSeeker, registerProvider, sendOTP, verifyOTP, login, resetPassword } from "../controllers/auth";
 import { addFavorite, getAllFavorites, removeFavorite } from "../controllers/favorite";
 import { deleteNotification, getAllNotifications, getNotificationById, readNotification, refreshDeviceToken } from "../controllers/notification";
 import { initiatePayment, initiateTransfer, verifyPayment } from "../controllers/payment";
@@ -24,6 +24,7 @@ router.post('/auth/send-otp', sendOTP)
 router.post('/auth/verify-otp', verifyOTP)
 router.post('/auth/login', login)
 router.get('/auth/me', me)
+router.post('/auth/reset-password', resetPassword);
 
 router.get('/dashboard', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), dashboard);
 router.post('/providers/upload-avatar', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), uploads.single('image'), uploadAvatar);

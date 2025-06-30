@@ -61,3 +61,8 @@
 2025-06-24 11:32:18	POST - /api/auth/seeker/register
 2025-06-24 11:36:53	POST - /api/auth/seeker/register
 2025-06-24 12:17:38	POST - /api/auth/seeker/register
+2025-06-30 20:14:55	POST - /api/auth/send-otp
+2025-06-30 20:16:45	POST - /api/auth/send-otp
+2025-06-30 20:17:50	POST - /api/auth/send-otp
+2025-06-30 20:19:23	POST - /api/auth/reset-password
+2025-06-30 20:19:49	POST - /api/auth/login
