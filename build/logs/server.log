@@ -57,3 +57,7 @@
 2025-04-24 18:18:12	POST - /api/payments/initiate-transfer
 2025-04-24 18:20:12	POST - /api/payments/initiate-transfer
 2025-04-24 18:21:57	POST - /api/payments/initiate-transfer
+2025-06-24 11:27:54	POST - /api/auth/seeker/register
+2025-06-24 11:32:18	POST - /api/auth/seeker/register
+2025-06-24 11:36:53	POST - /api/auth/seeker/register
+2025-06-24 12:17:38	POST - /api/auth/seeker/register

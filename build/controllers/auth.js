@@ -147,9 +147,8 @@ exports.verifyOTP = verifyOTP;
 const sendOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { email, reason } = req.body;
     try {
-        let user = yield Models_1.User.findOne({ where: { email } });
-        if (!user)
-            return (0, modules_1.handleResponse)(res, 404, false, 'User not found');
+        //let user = await User.findOne({ where: { email } })
+        //if (!user) return handleResponse(res, 404, false, 'User not found')
         let otp = (0, modules_1.getRandom)(6).toString();
         let otpExpires = new Date(Date.now() + configSetup_1.default.OTP_EXPIRY_TIME * 60 * 1000);
         let otpRecord = yield Models_1.OTP.create({ email, otp, expiresAt: otpExpires });

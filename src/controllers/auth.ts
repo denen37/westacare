@@ -185,9 +185,9 @@ export const sendOTP = async (req: Request, res: Response) => {
     let { email, reason } = req.body;
 
     try {
-        let user = await User.findOne({ where: { email } })
+        //let user = await User.findOne({ where: { email } })
 
-        if (!user) return handleResponse(res, 404, false, 'User not found')
+        //if (!user) return handleResponse(res, 404, false, 'User not found')
 
         let otp = getRandom(6).toString();
 
