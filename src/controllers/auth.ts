@@ -158,11 +158,7 @@ export const login = async (req: Request, res: Response) => {
 
 
 export const verifyOTP = async (req: Request, res: Response) => {
-    let { email, otp, reason } = req.body;
-
-    // let user = await User.findOne({ where: { email } })
-
-    // if (!user) return handleResponse(res, 404, false, 'User not found')
+    let { email, otp } = req.body;
 
     try {
         let otpRecord = await OTP.findOne({ where: { email, otp } })
@@ -173,15 +169,15 @@ export const verifyOTP = async (req: Request, res: Response) => {
 
         await OTP.destroy({ where: { email } })
 
-        if (reason === 'verify_email') {
-            const user = await User.findOne({ where: { email } })
+        // if (reason === 'verify_email') {
+        //     const user = await User.findOne({ where: { email } })
 
-            if (!user) return handleResponse(res, 404, false, 'User not found')
+        //     if (!user) return handleResponse(res, 404, false, 'User not found')
 
-            user.emailVerified = true
+        //     user.emailVerified = true
 
-            await user.save()
-        }
+        //     await user.save()
+        // }
 
         return successResponse(res, 'OTP verified')
     } catch (error) {

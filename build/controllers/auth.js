@@ -129,9 +129,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.login = login;
 const verifyOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { email, otp, reason } = req.body;
-    // let user = await User.findOne({ where: { email } })
-    // if (!user) return handleResponse(res, 404, false, 'User not found')
+    let { email, otp } = req.body;
     try {
         let otpRecord = yield Models_1.OTP.findOne({ where: { email, otp } });
         if (!otpRecord)
@@ -139,13 +137,12 @@ const verifyOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (otpRecord.expiresAt < new Date())
             return (0, modules_1.handleResponse)(res, 401, false, 'OTP expired');
         yield Models_1.OTP.destroy({ where: { email } });
-        if (reason === 'verify_email') {
-            const user = yield Models_1.User.findOne({ where: { email } });
-            if (!user)
-                return (0, modules_1.handleResponse)(res, 404, false, 'User not found');
-            user.emailVerified = true;
-            yield user.save();
-        }
+        // if (reason === 'verify_email') {
+        //     const user = await User.findOne({ where: { email } })
+        //     if (!user) return handleResponse(res, 404, false, 'User not found')
+        //     user.emailVerified = true
+        //     await user.save()
+        // }
         return (0, modules_1.successResponse)(res, 'OTP verified');
     }
     catch (error) {
