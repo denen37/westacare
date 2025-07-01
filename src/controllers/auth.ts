@@ -4,7 +4,7 @@ import { User, OTP, Wallet, Seeker } from '../models/Models'
 import bcrypt from 'bcryptjs'
 import { sendEmail } from '../services/email';
 import { sign } from 'jsonwebtoken';
-import config from '../config/configSetup'
+import config from '../config/configSetup';
 import { OTPReason } from '../models/OTP';
 import { passwordReset, registerEmail, verifyEmail, welcomeEmail } from '../utils/messages';
 import { UserRole } from '../models/User';
@@ -60,8 +60,14 @@ export const registerSeeker = async (req: Request, res: Response) => {
 
         emailSendStatus = Boolean(messageId);
 
+        let token = sign({
+            id: user.id,
+            email: user.email,
+            role: user.role
+        }, config.TOKEN_SECRET);
+
         return handleResponse(res, 200, true, 'Seeker registered successfully', {
-            user, seeker, emailSendStatus
+            user, seeker, token, emailSendStatus
         })
     } catch (error) {
         return errorResponse(res, 'error', error)
@@ -105,7 +111,11 @@ export const registerProvider = async (req: Request, res: Response) => {
 
         let emailSendStatus = Boolean(messageId);
 
-        let token = sign({ id: userCreated.id, email: userCreated.email }, config.TOKEN_SECRET);
+        let token = sign({
+            id: userCreated.id,
+            email: userCreated.email,
+            role: userCreated.role
+        }, config.TOKEN_SECRET);
 
         return successResponse(res, 'User created', {
             user: userCreated,

@@ -55,8 +55,13 @@ const registerSeeker = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let emailSendStatus;
         let messageId = yield (0, email_1.sendEmail)(email, (0, messages_1.welcomeEmail)().subject, (0, messages_1.welcomeEmail)().body, seeker.firstName);
         emailSendStatus = Boolean(messageId);
+        let token = (0, jsonwebtoken_1.sign)({
+            id: user.id,
+            email: user.email,
+            role: user.role
+        }, configSetup_1.default.TOKEN_SECRET);
         return (0, modules_1.handleResponse)(res, 200, true, 'Seeker registered successfully', {
-            user, seeker, emailSendStatus
+            user, seeker, token, emailSendStatus
         });
     }
     catch (error) {
@@ -84,7 +89,11 @@ const registerProvider = (req, res) => __awaiter(void 0, void 0, void 0, functio
         let regEmail = (0, messages_1.registerEmail)(otp);
         let messageId = yield (0, email_1.sendEmail)(email, regEmail.subject, regEmail.body, 'User');
         let emailSendStatus = Boolean(messageId);
-        let token = (0, jsonwebtoken_1.sign)({ id: userCreated.id, email: userCreated.email }, configSetup_1.default.TOKEN_SECRET);
+        let token = (0, jsonwebtoken_1.sign)({
+            id: userCreated.id,
+            email: userCreated.email,
+            role: userCreated.role
+        }, configSetup_1.default.TOKEN_SECRET);
         return (0, modules_1.successResponse)(res, 'User created', {
             user: userCreated,
             emailSendStatus: emailSendStatus,
