@@ -237,47 +237,59 @@ const dashboard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { monthsAgo = 4 } = req.query;
     const xMonthsAgo = new Date();
     xMonthsAgo.setMonth(xMonthsAgo.getMonth() - Number(monthsAgo));
+    console.log(xMonthsAgo);
     try {
         const user = yield Models_1.User.findOne({
             where: { id, email },
             attributes: ['id', 'email', 'phone', 'role'],
-            include: [{
+            include: [
+                {
                     model: Models_1.Provider,
                     attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
-                    include: [{
+                    include: [
+                        {
                             model: Models_1.Appointment,
                             where: {
                                 datetime: {
                                     [sequelize_1.Op.gt]: xMonthsAgo,
                                 }
-                            }
-                        }]
+                            },
+                            required: false
+                        },
+                    ]
                 }, {
                     model: Models_1.Seeker,
                     attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
-                    include: [{
+                    include: [
+                        {
                             model: Models_1.Appointment,
                             where: {
                                 datetime: {
                                     [sequelize_1.Op.gt]: xMonthsAgo,
                                 }
-                            }
-                        }]
-                }, {
-                    model: Models_1.Centre,
-                    attributes: ['id', 'name', 'regNo', 'image', 'address'],
-                    // include: [{
-                    //     model: Appointment,
-                    //     where: {
-                    //         datetime: {
-                    //             [Op.gt]: xMonthsAgo,
-                    //         }
-                    //     }
-                    // }]
-                }, {
+                            },
+                            required: false
+                        },
+                    ]
+                },
+                // {
+                //     model: Centre,
+                //     attributes: ['id', 'name', 'regNo', 'image', 'address'],
+                //     include: [{
+                //         model: Appointment,
+                //         where: {
+                //             datetime: {
+                //                 [Op.gt]: xMonthsAgo,
+                //             },
+                //             required: false
+                //         }
+                //     }]
+                // }, 
+                {
                     model: Models_1.Wallet,
                     attributes: ['id', 'balance', 'currency']
-                }]
+                }
+            ]
         });
         Object.entries(user === null || user === void 0 ? void 0 : user.dataValues).forEach(([key, value]) => {
             if (typeof (value) === "object" && value === null) {

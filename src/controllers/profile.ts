@@ -327,48 +327,61 @@ export const dashboard = async (req: Request, res: Response) => {
     const xMonthsAgo = new Date();
     xMonthsAgo.setMonth(xMonthsAgo.getMonth() - Number(monthsAgo));
 
+    console.log(xMonthsAgo);
+
     try {
         const user = await User.findOne({
             where: { id, email },
             attributes: ['id', 'email', 'phone', 'role'],
 
-            include: [{
-                model: Provider,
-                attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
-                include: [{
-                    model: Appointment,
-                    where: {
-                        datetime: {
-                            [Op.gt]: xMonthsAgo,
-                        }
-                    }
-                }]
-            }, {
-                model: Seeker,
-                attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
-                include: [{
-                    model: Appointment,
-                    where: {
-                        datetime: {
-                            [Op.gt]: xMonthsAgo,
-                        }
-                    }
-                }]
-            }, {
-                model: Centre,
-                attributes: ['id', 'name', 'regNo', 'image', 'address'],
-                // include: [{
-                //     model: Appointment,
-                //     where: {
-                //         datetime: {
-                //             [Op.gt]: xMonthsAgo,
+            include: [
+                {
+                    model: Provider,
+                    attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
+                    include: [
+                        {
+                            model: Appointment,
+                            where: {
+                                datetime: {
+                                    [Op.gt]: xMonthsAgo,
+                                }
+                            },
+                            required: false
+                        },
+                    ]
+                }, {
+                    model: Seeker,
+                    attributes: ['id', 'firstName', 'lastName', 'image', 'gender'],
+                    include: [
+                        {
+                            model: Appointment,
+                            where: {
+                                datetime: {
+                                    [Op.gt]: xMonthsAgo,
+                                }
+                            },
+                            required: false
+                        },
+                    ]
+                },
+                // {
+                //     model: Centre,
+                //     attributes: ['id', 'name', 'regNo', 'image', 'address'],
+                //     include: [{
+                //         model: Appointment,
+                //         where: {
+                //             datetime: {
+                //                 [Op.gt]: xMonthsAgo,
+                //             },
+
+                //             required: false
                 //         }
-                //     }
-                // }]
-            }, {
-                model: Wallet,
-                attributes: ['id', 'balance', 'currency']
-            }]
+                //     }]
+                // }, 
+                {
+                    model: Wallet,
+                    attributes: ['id', 'balance', 'currency']
+                }]
         });
 
 

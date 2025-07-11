@@ -23,9 +23,9 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
         if (!token) return handleResponse(res, 401, false, `Access Denied / Unauthorized request`);
         token = token.split(' ')[1]; // Remove Bearer from string 
 
-        if (token === 'null' || !token) return handleResponse(res, 401, false, `Unauthorized request`);
+        if (token === 'null' || !token) return handleResponse(res, 401, false, `Empty Token`);
         let verified: any = verify(token, config.TOKEN_SECRET);
-        if (!verified) return handleResponse(res, 401, false, `Unauthorized request`);
+        if (!verified) return handleResponse(res, 401, false, `Invalid Token`);
         if (verified.admin === true) {
             req.admin = verified;
         } else {

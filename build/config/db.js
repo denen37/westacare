@@ -48,7 +48,7 @@ const sequelize = new sequelize_typescript_1.Sequelize(configSetup_1.default.DBN
     dialectOptions: {
         ssl: false,
     },
-    logging: false,
+    logging: true,
     models: Object.values(models),
 });
 // const sequelize = new Sequelize({

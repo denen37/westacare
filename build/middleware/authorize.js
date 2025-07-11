@@ -31,10 +31,10 @@ const isAuthorized = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             return (0, modules_1.handleResponse)(res, 401, false, `Access Denied / Unauthorized request`);
         token = token.split(' ')[1]; // Remove Bearer from string 
         if (token === 'null' || !token)
-            return (0, modules_1.handleResponse)(res, 401, false, `Unauthorized request`);
+            return (0, modules_1.handleResponse)(res, 401, false, `Empty Token`);
         let verified = (0, jsonwebtoken_1.verify)(token, configSetup_1.default.TOKEN_SECRET);
         if (!verified)
-            return (0, modules_1.handleResponse)(res, 401, false, `Unauthorized request`);
+            return (0, modules_1.handleResponse)(res, 401, false, `Invalid Token`);
         if (verified.admin === true) {
             req.admin = verified;
         }
