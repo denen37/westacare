@@ -69,15 +69,8 @@ const updateSeekerProfile1 = (req, res) => __awaiter(void 0, void 0, void 0, fun
     const { id, email } = req.user;
     const user = yield Models_1.User.findOne({ where: { id }, include: [{ model: Models_1.Seeker }] });
     const seekerId = user === null || user === void 0 ? void 0 : user.seeker.id;
-    const { image, bloodGroup, maritalStatus, height, weight } = req.body;
     try {
-        const updatedProfile = yield Models_1.Seeker.update({
-            image,
-            bloodGroup,
-            maritalStatus,
-            height,
-            weight
-        }, {
+        const updatedProfile = yield Models_1.Seeker.update(req.body, {
             where: {
                 id: seekerId
             }
@@ -237,7 +230,6 @@ const dashboard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { monthsAgo = 4 } = req.query;
     const xMonthsAgo = new Date();
     xMonthsAgo.setMonth(xMonthsAgo.getMonth() - Number(monthsAgo));
-    console.log(xMonthsAgo);
     try {
         const user = yield Models_1.User.findOne({
             where: { id, email },

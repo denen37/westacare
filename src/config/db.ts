@@ -16,7 +16,7 @@ const sequelize = new Sequelize(
         dialectOptions: {
             ssl: false,
         },
-        logging: true,
+        logging: false,
         models: Object.values(models),
     }
 );

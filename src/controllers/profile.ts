@@ -95,16 +95,9 @@ export const updateSeekerProfile1 = async (req: Request, res: Response) => {
 
     const seekerId = user?.seeker.id;
 
-    const { image, bloodGroup, maritalStatus, height, weight } = req.body;
 
     try {
-        const updatedProfile = await Seeker.update({
-            image,
-            bloodGroup,
-            maritalStatus,
-            height,
-            weight
-        }, {
+        const updatedProfile = await Seeker.update(req.body, {
             where: {
                 id: seekerId
             }
@@ -326,8 +319,6 @@ export const dashboard = async (req: Request, res: Response) => {
 
     const xMonthsAgo = new Date();
     xMonthsAgo.setMonth(xMonthsAgo.getMonth() - Number(monthsAgo));
-
-    console.log(xMonthsAgo);
 
     try {
         const user = await User.findOne({
