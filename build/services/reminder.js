@@ -27,7 +27,8 @@ const User_1 = require("../models/User");
 // const { pushNotification } = require("../services/pushNotification");
 // const Notification = require("../models/shared/notificationModel");
 const scheduleReminder = (user, reminder) => __awaiter(void 0, void 0, void 0, function* () {
-    let timesMod = reminder.times.split(":").join("-");
+    var _a;
+    let timesMod = (_a = reminder.times) === null || _a === void 0 ? void 0 : _a.split(":").join("-");
     const times = JSON.parse(timesMod);
     try {
         if (reminder.recurrence === Reminder_1.Recurrence.DAILY) {

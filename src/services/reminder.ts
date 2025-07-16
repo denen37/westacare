@@ -15,7 +15,7 @@ import { User } from "../models/User";
 // const Notification = require("../models/shared/notificationModel");
 
 export const scheduleReminder = async (user: User, reminder: Reminder) => {
-    let timesMod = reminder.times.split(":").join("-");
+    let timesMod = reminder.times?.split(":").join("-");
     const times: string[] = JSON.parse(timesMod);
 
     try {
