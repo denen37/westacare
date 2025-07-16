@@ -27,14 +27,12 @@ const User_1 = require("../models/User");
 // const { pushNotification } = require("../services/pushNotification");
 // const Notification = require("../models/shared/notificationModel");
 const scheduleReminder = (user, reminder) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    let timesMod = (_a = reminder.times) === null || _a === void 0 ? void 0 : _a.split(":").join("-");
-    const times = JSON.parse(timesMod);
+    const times = reminder.times;
     try {
         if (reminder.recurrence === Reminder_1.Recurrence.DAILY) {
             times.forEach(time => {
-                const hours = time.split('-')[0];
-                const minutes = time.split('-')[1];
+                const hours = time.split(':')[0];
+                const minutes = time.split(':')[1];
                 let notification = (0, messages_1.medicineReminderNotification)(reminder, `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`);
                 node_schedule_1.default.scheduleJob(`*/${minutes} ${hours} * * *`, () => (0, notification_1.sendPushNotification)(user.deviceToken, notification.title, notification.title, {}));
             });
@@ -46,8 +44,8 @@ const scheduleReminder = (user, reminder) => __awaiter(void 0, void 0, void 0, f
             const day = startDate.getDate();
             times.forEach(time => {
                 const now = new Date();
-                const hours = Number(time.split('-')[0]);
-                const minutes = Number(time.split('-')[1]);
+                const hours = Number(time.split(':')[0]);
+                const minutes = Number(time.split(':')[1]);
                 if (hours >= now.getHours() && minutes >= now.getMinutes()) {
                     const date = new Date(year, month, day, hours, minutes, 0);
                     let notification = (0, messages_1.medicineReminderNotification)(reminder, date.toLocaleTimeString());

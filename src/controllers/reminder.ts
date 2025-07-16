@@ -64,10 +64,10 @@ export const createReminder = async (req: Request, res: Response) => {
     });
 
     //Add reminder
-    let reminder = { ...newReminder.dataValues, times: JSON.stringify(times) };
+    //let reminder = { ...newReminder.dataValues};
 
     if (seeker)
-        scheduleReminder(seeker.user, reminder);
+        scheduleReminder(seeker.user, newReminder);
 
     return successResponse(res, "success", newReminder);
 }

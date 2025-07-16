@@ -38,7 +38,7 @@ export class Reminder extends Model {
 
     @AllowNull(false)
     @Column(DataType.JSON)
-    times!: string
+    times!: string[]
 
 
 

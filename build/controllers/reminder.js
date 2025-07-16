@@ -65,9 +65,9 @@ const createReminder = (req, res) => __awaiter(void 0, void 0, void 0, function*
         seekerId: seeker === null || seeker === void 0 ? void 0 : seeker.id
     });
     //Add reminder
-    let reminder = Object.assign(Object.assign({}, newReminder.dataValues), { times: JSON.stringify(times) });
+    //let reminder = { ...newReminder.dataValues};
     if (seeker)
-        (0, reminder_1.scheduleReminder)(seeker.user, reminder);
+        (0, reminder_1.scheduleReminder)(seeker.user, newReminder);
     return (0, modules_1.successResponse)(res, "success", newReminder);
 });
 exports.createReminder = createReminder;

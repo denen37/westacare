@@ -15,15 +15,15 @@ import { User } from "../models/User";
 // const Notification = require("../models/shared/notificationModel");
 
 export const scheduleReminder = async (user: User, reminder: Reminder) => {
-    let timesMod = reminder.times?.split(":").join("-");
-    const times: string[] = JSON.parse(timesMod);
+
+    const times: string[] = reminder.times
 
     try {
 
         if (reminder.recurrence === Recurrence.DAILY) {
             times.forEach(time => {
-                const hours = time.split('-')[0];
-                const minutes = time.split('-')[1];
+                const hours = time.split(':')[0];
+                const minutes = time.split(':')[1];
 
                 let notification = medicineReminderNotification(reminder, `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`)
 
@@ -47,8 +47,8 @@ export const scheduleReminder = async (user: User, reminder: Reminder) => {
 
             times.forEach(time => {
                 const now = new Date();
-                const hours = Number(time.split('-')[0]);
-                const minutes = Number(time.split('-')[1]);
+                const hours = Number(time.split(':')[0]);
+                const minutes = Number(time.split(':')[1]);
 
                 if (hours >= now.getHours() && minutes >= now.getMinutes()) {
                     const date = new Date(year, month, day, hours, minutes, 0);
