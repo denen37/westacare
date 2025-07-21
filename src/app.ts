@@ -6,10 +6,13 @@ import { isAuthorized } from './middleware/authorize';
 import routes from './routes/routes';
 import { initializeReminders } from './services/reminder';
 import { logRoutes } from './middleware/logRoutes';
+import path from 'path';
 
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: true }));
+
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(logRoutes);
 

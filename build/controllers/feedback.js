@@ -65,7 +65,7 @@ const getFeedbacks = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getFeedbacks = getFeedbacks;
 const updateFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { id } = req.user;
     const { rating, review, providerId, centreId } = req.body;
     if (providerId && centreId) {
         return (0, modules_1.handleResponse)(res, 400, false, 'Cannot update feedback to both provider and centre at a time');

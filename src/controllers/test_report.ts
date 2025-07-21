@@ -20,7 +20,10 @@ export const getAllTestReports = async (req: Request, res: Response) => {
             whereCondition = { providerId: provider?.id }
         }
 
-        const testreports = await TestReport.findAll({ where: whereCondition })
+        const testreports = await TestReport.findAll({
+            where: whereCondition,
+            order: [['createdAt', 'DESC']]
+        })
 
         return successResponse(res, 'success', testreports);
     } catch (error: any) {

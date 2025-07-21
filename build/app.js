@@ -11,9 +11,11 @@ const authorize_1 = require("./middleware/authorize");
 const routes_1 = __importDefault(require("./routes/routes"));
 const reminder_1 = require("./services/reminder");
 const logRoutes_1 = require("./middleware/logRoutes");
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({ origin: true }));
+app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 app.use(logRoutes_1.logRoutes);
 app.get('/', (req, res) => {
     res.send('Hello world! The API is working.');

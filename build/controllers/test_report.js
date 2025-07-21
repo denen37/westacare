@@ -25,7 +25,10 @@ const getAllTestReports = (req, res) => __awaiter(void 0, void 0, void 0, functi
             const provider = yield Models_1.Provider.findOne({ where: { userId: id } });
             whereCondition = { providerId: provider === null || provider === void 0 ? void 0 : provider.id };
         }
-        const testreports = yield Models_1.TestReport.findAll({ where: whereCondition });
+        const testreports = yield Models_1.TestReport.findAll({
+            where: whereCondition,
+            order: [['createdAt', 'DESC']]
+        });
         return (0, modules_1.successResponse)(res, 'success', testreports);
     }
     catch (error) {

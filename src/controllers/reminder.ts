@@ -18,9 +18,7 @@ export const getAllMyReminders = async (req: Request, res: Response) => {
             where: { seekerId: seeker?.id },
         })
 
-        return successResponse(res, "success", reminders.map((reminder) => {
-            return { ...reminder.dataValues, times: JSON.parse(reminder.dataValues.times) }
-        }));
+        return successResponse(res, "success", reminders);
     } catch (error) {
         return errorResponse(res, "error", error);
     }
@@ -35,7 +33,7 @@ export const getReminder = async (req: Request, res: Response) => {
             where: { id },
         })
 
-        return successResponse(res, "success", { ...reminder?.dataValues, times: JSON.parse(reminder?.dataValues.times) });
+        return successResponse(res, "success", reminder);
     } catch (error) {
         return errorResponse(res, "error", error);
     }
@@ -77,14 +75,14 @@ export const updateReminder = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        const { time, status } = req.body;
+        const { times, status, startDate, endDate } = req.body;
 
         const reminder = await Reminder.findByPk(id);
         if (!reminder) {
             return handleResponse(res, 404, false, "Reminder not found");
         }
 
-        await reminder.update({ time, status });
+        await reminder.update({ times, status, startDate, endDate });
 
         await reminder.save();
 

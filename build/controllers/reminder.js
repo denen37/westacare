@@ -25,9 +25,7 @@ const getAllMyReminders = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const reminders = yield Reminder_1.Reminder.findAll({
             where: { seekerId: seeker === null || seeker === void 0 ? void 0 : seeker.id },
         });
-        return (0, modules_1.successResponse)(res, "success", reminders.map((reminder) => {
-            return Object.assign(Object.assign({}, reminder.dataValues), { times: JSON.parse(reminder.dataValues.times) });
-        }));
+        return (0, modules_1.successResponse)(res, "success", reminders);
     }
     catch (error) {
         return (0, modules_1.errorResponse)(res, "error", error);
@@ -40,7 +38,7 @@ const getReminder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const reminder = yield Reminder_1.Reminder.findOne({
             where: { id },
         });
-        return (0, modules_1.successResponse)(res, "success", Object.assign(Object.assign({}, reminder === null || reminder === void 0 ? void 0 : reminder.dataValues), { times: JSON.parse(reminder === null || reminder === void 0 ? void 0 : reminder.dataValues.times) }));
+        return (0, modules_1.successResponse)(res, "success", reminder);
     }
     catch (error) {
         return (0, modules_1.errorResponse)(res, "error", error);
@@ -74,12 +72,12 @@ exports.createReminder = createReminder;
 const updateReminder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const { time, status } = req.body;
+        const { times, status, startDate, endDate } = req.body;
         const reminder = yield Reminder_1.Reminder.findByPk(id);
         if (!reminder) {
             return (0, modules_1.handleResponse)(res, 404, false, "Reminder not found");
         }
-        yield reminder.update({ time, status });
+        yield reminder.update({ times, status, startDate, endDate });
         yield reminder.save();
         (0, reminder_1.initializeReminders)();
         return (0, modules_1.successResponse)(res, "success", reminder);

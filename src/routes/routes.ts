@@ -27,7 +27,7 @@ router.get('/auth/me', me)
 router.post('/auth/reset-password', resetPassword);
 
 router.get('/dashboard', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), dashboard);
-router.post('/providers/upload-avatar', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), uploads.single('image'), uploadAvatar);
+router.post('/upload-avatar', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), uploads.single('avatar'), uploadAvatar);
 router.post('/providers/create-profile', allowRoles(UserRole.PROVIDER), createProviderProfile1);
 router.post('/providers/update-profile', allowRoles(UserRole.PROVIDER), updateProfile2);
 router.post('/providers/upload-credential', allowRoles(UserRole.PROVIDER), uploads.single('file'), upload_credential);

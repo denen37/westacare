@@ -7,47 +7,46 @@ import { paginate } from "../utils/pagination"
 // Controller logic for handling user routes
 export const getAllNotifications = async (req: Request, res: Response) => {
     const { id } = req.user;
-    const { page, count, read } = req.query;
-    let { metadata } = req.query;
+    const { page = 1, count = 10, read } = req.query;
+    let { metadata = "false" } = req.query;
+
+    let condition: { [key: string]: any } = {
+        userId: id
+    }
 
     let isRead
     if (read) {
         isRead = read === 'true' ? true : false
+        condition = { ...condition, read: isRead }
     }
 
-    let condition: { [key: string]: any } = {
-        userid: id
-    }
+    let hasMetadata = metadata !== 'false' ? true : false;
 
-    condition = { ...condition, read: isRead }
+    // try {
+    const notifications = await Notification.findAll({
+        where: condition,
 
-    let hasMetadata = page && metadata !== 'false' ? true : false;
+        ...paginate(Number(page), Number(count))
+    });
 
-    try {
-        const notifications = await Notification.findAll({
-            where: condition,
-
-            ...paginate(Number(page), Number(count))
+    if (hasMetadata) {
+        const total = await Notification.count({
+            where: condition
         });
-
-        if (hasMetadata) {
-            const total = await Notification.count({
-                where: condition
-            });
-            const totalPages = Math.ceil(total / Number(count));
-            let pagemetadata = {
-                currentPage: Number(page),
-                numPerPage: Number(count),
-                totalPages: totalPages,
-                totalItems: total
-            }
-
-            return successResponse(res, "error", { notifications, metadata: pagemetadata })
+        const totalPages = Math.ceil(total / Number(count));
+        let pagemetadata = {
+            currentPage: Number(page),
+            numPerPage: Number(count),
+            totalPages: totalPages,
+            totalItems: total
         }
-        return successResponse(res, "success", { notifications })
-    } catch (error) {
-        return errorResponse(res, "error", error)
+
+        return successResponse(res, "error", { notifications, metadata: pagemetadata })
     }
+    return successResponse(res, "success", { notifications })
+    // } catch (error) {
+    //     return errorResponse(res, "error", error)
+    // }
 };
 
 

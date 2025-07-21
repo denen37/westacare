@@ -16,37 +16,36 @@ const pagination_1 = require("../utils/pagination");
 // Controller logic for handling user routes
 const getAllNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
-    const { page, count, read } = req.query;
-    let { metadata } = req.query;
+    const { page = 1, count = 10, read } = req.query;
+    let { metadata = "false" } = req.query;
+    let condition = {
+        userId: id
+    };
     let isRead;
     if (read) {
         isRead = read === 'true' ? true : false;
+        condition = Object.assign(Object.assign({}, condition), { read: isRead });
     }
-    let condition = {
-        userid: id
-    };
-    condition = Object.assign(Object.assign({}, condition), { read: isRead });
-    let hasMetadata = page && metadata !== 'false' ? true : false;
-    try {
-        const notifications = yield Models_1.Notification.findAll(Object.assign({ where: condition }, (0, pagination_1.paginate)(Number(page), Number(count))));
-        if (hasMetadata) {
-            const total = yield Models_1.Notification.count({
-                where: condition
-            });
-            const totalPages = Math.ceil(total / Number(count));
-            let pagemetadata = {
-                currentPage: Number(page),
-                numPerPage: Number(count),
-                totalPages: totalPages,
-                totalItems: total
-            };
-            return (0, modules_1.successResponse)(res, "error", { notifications, metadata: pagemetadata });
-        }
-        return (0, modules_1.successResponse)(res, "success", { notifications });
+    let hasMetadata = metadata !== 'false' ? true : false;
+    // try {
+    const notifications = yield Models_1.Notification.findAll(Object.assign({ where: condition }, (0, pagination_1.paginate)(Number(page), Number(count))));
+    if (hasMetadata) {
+        const total = yield Models_1.Notification.count({
+            where: condition
+        });
+        const totalPages = Math.ceil(total / Number(count));
+        let pagemetadata = {
+            currentPage: Number(page),
+            numPerPage: Number(count),
+            totalPages: totalPages,
+            totalItems: total
+        };
+        return (0, modules_1.successResponse)(res, "error", { notifications, metadata: pagemetadata });
     }
-    catch (error) {
-        return (0, modules_1.errorResponse)(res, "error", error);
-    }
+    return (0, modules_1.successResponse)(res, "success", { notifications });
+    // } catch (error) {
+    //     return errorResponse(res, "error", error)
+    // }
 });
 exports.getAllNotifications = getAllNotifications;
 const getNotificationById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

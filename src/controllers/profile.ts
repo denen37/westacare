@@ -178,22 +178,8 @@ export const uploadAvatar = async (req: Request, res: Response) => {
 
     const file = req.file as Express.Multer.File;
 
-    // const fileModified = {
-    //     buffer: file.buffer,
-    //     name: Date.now().toString(),
-    //     mimetype: file.mimetype,
-    // }
-
-    // try {
-    //     const path = await uploadFileToBlob(StorageContainer.PROFILE, fileModified)
-
-    //     return successResponse(res, 'success', { url: path })
-    // } catch (error) {
-    //     return handleResponse(res, 500, false, 'Error uploading file');
-    // }
-
     try {
-        return successResponse(res, 'success', { url: '/uploads/' + file.filename })
+        return successResponse(res, 'success', { url: `/${file.path.slice(file.path.indexOf('uploads')).split('\\').join('/')}` })
     } catch (error) {
         return handleResponse(res, 500, false, 'Error uploading file');
     }

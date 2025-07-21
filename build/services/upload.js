@@ -16,6 +16,7 @@ exports.upload_cloud = exports.uploads = void 0;
 // import { NextFunction, Request, Response } from 'express';
 // import config from '../config/configSetup';
 const cloudinary = require('cloudinary').v2;
+const crypto_1 = require("crypto");
 const multer_1 = __importDefault(require("multer"));
 const fs = require('fs');
 const path = require('path');
@@ -25,31 +26,42 @@ cloudinary.config({
     api_key: '774921177923962',
     api_secret: 'dDUKTJBycDHC4gjOKZ9UAHw8SAM'
 });
-const pathExistsOrCreate = (dirPath) => {
-    let filepath = path.resolve(__dirname, dirPath);
+const pathExistsOrCreate = (folder) => {
+    let filepath = path.resolve(__dirname, '../../public/', folder);
     if (!fs.existsSync(filepath)) {
         fs.mkdirSync(filepath, { recursive: true });
         console.log(`Directory created: ${filepath}`);
     }
     return filepath;
 };
-const imageStorage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, pathExistsOrCreate('../public/images'));
-    },
-    filename: (req, file, cb) => {
-        let filename = Date.now() + "--" + file.originalname;
-        cb(null, filename.replace(/\s+/g, ''));
-    }
-});
-// export const uploads = multer({
-//     storage: imageStorage,
-// })
-const storage = multer_1.default.memoryStorage();
+const storeImage = () => {
+    return multer_1.default.diskStorage({
+        destination: (req, file, cb) => {
+            switch (file.fieldname) {
+                case 'avatar':
+                    cb(null, pathExistsOrCreate('uploads/avatars'));
+                    break;
+                case 'file':
+                    cb(null, pathExistsOrCreate('uploads/documents'));
+                    break;
+                default:
+                    cb(new Error('Invalid field name'), '');
+            }
+        },
+        filename: (req, file, cb) => {
+            let filename = (0, crypto_1.randomUUID)() + '.' + file.mimetype.split('/')[1];
+            cb(null, filename.replace(/\s+/g, ''));
+        }
+    });
+};
 exports.uploads = (0, multer_1.default)({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+    storage: storeImage(),
 });
+// const storage = multer.memoryStorage();
+// export const uploads = multer({
+//     storage: storage,
+//     limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+// });
 const upload_cloud = (path) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield cloudinary.uploader.upload(path, { resource_type: 'auto' });
     console.log(result.secure_url);

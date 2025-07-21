@@ -189,8 +189,8 @@ const cancelAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
         //send push notifications
         return (0, modules_1.successResponse)(res, 'success', {
             message: 'Appointment cancelled successfully',
-            emailSendStatusSeek,
-            emailSendStatusProvider
+            emailSendStatusSeeker: Boolean(emailSendStatusSeek),
+            emailSendStatusProvider: Boolean(emailSendStatusProvider)
         });
     }
     catch (error) {
@@ -233,12 +233,12 @@ const rescheduleAppointment = (req, res) => __awaiter(void 0, void 0, void 0, fu
         let emailSendStatusProvider = yield (0, email_1.sendEmail)(appointmentVal.provider.user.email, (0, messages_1.providerAppointmentRescheduledEmail)(appointmentVal).subject, (0, messages_1.providerAppointmentRescheduledEmail)(appointmentVal).body, appointmentVal.provider.firstName);
         return (0, modules_1.successResponse)(res, 'success', {
             message: 'Appointment rescheduled successfully',
-            emailSendStatusSeek,
-            emailSendStatusProvider,
+            emailSendStatusSeeker: Boolean(emailSendStatusSeek),
+            emailSendStatusProvider: Boolean(emailSendStatusProvider),
         });
     }
     catch (error) {
-        return (0, modules_1.errorResponse)(res, 'error', 'Error rescheduling appointment');
+        return (0, modules_1.errorResponse)(res, 'error', { message: 'Error rescheduling appointment', error });
     }
 });
 exports.rescheduleAppointment = rescheduleAppointment;

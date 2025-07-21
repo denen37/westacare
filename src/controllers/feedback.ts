@@ -66,7 +66,7 @@ export const getFeedbacks = async (req: Request, res: Response) => {
 }
 
 export const updateFeedback = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.user;
     const { rating, review, providerId, centreId } = req.body;
 
     if (providerId && centreId) {

@@ -241,8 +241,8 @@ export const cancelAppointment = async (req: Request, res: Response) => {
 
         return successResponse(res, 'success', {
             message: 'Appointment cancelled successfully',
-            emailSendStatusSeek,
-            emailSendStatusProvider
+            emailSendStatusSeeker: Boolean(emailSendStatusSeek),
+            emailSendStatusProvider: Boolean(emailSendStatusProvider)
         })
     } catch (error) {
         return errorResponse(res, 'error', error)
@@ -307,11 +307,11 @@ export const rescheduleAppointment = async (req: Request, res: Response) => {
 
         return successResponse(res, 'success', {
             message: 'Appointment rescheduled successfully',
-            emailSendStatusSeek,
-            emailSendStatusProvider,
+            emailSendStatusSeeker: Boolean(emailSendStatusSeek),
+            emailSendStatusProvider: Boolean(emailSendStatusProvider),
         })
     } catch (error) {
-        return errorResponse(res, 'error', 'Error rescheduling appointment')
+        return errorResponse(res, 'error', { message: 'Error rescheduling appointment', error })
     }
 }
 
