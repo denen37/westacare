@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshDeviceToken = exports.storeDeviceToken = exports.readNotification = exports.deleteNotification = exports.getNotificationById = exports.getAllNotifications = void 0;
+exports.refreshDeviceToken = exports.storeDeviceToken = exports.readNotification = exports.deleteNotification = exports.getNotificationById = exports.getNotificationCount = exports.getAllNotifications = void 0;
 const Models_1 = require("../models/Models");
 const modules_1 = require("../utils/modules");
 const pagination_1 = require("../utils/pagination");
@@ -48,6 +48,16 @@ const getAllNotifications = (req, res) => __awaiter(void 0, void 0, void 0, func
     // }
 });
 exports.getAllNotifications = getAllNotifications;
+const getNotificationCount = (req, res) => {
+    try {
+        const notifications = Models_1.Notification.count();
+        return (0, modules_1.successResponse)(res, "success", { notifications });
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, "error", error);
+    }
+};
+exports.getNotificationCount = getNotificationCount;
 const getNotificationById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const notification = yield Models_1.Notification.findByPk(req.params.id);

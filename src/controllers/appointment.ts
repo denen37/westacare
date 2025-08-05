@@ -1,10 +1,11 @@
 import { Request, Response } from "express"
 import { User, UserRole } from "../models/User"
-import { errorResponse, successResponse } from "../utils/modules"
+import { errorResponse, handleResponse, successResponse } from "../utils/modules"
 import { Appointment, Seeker, Provider, MedicalInfo, MedicalHistory, Centre, Prescription, PrescriptionItem, Referral } from "../models/Models"
 import { sendEmail } from "../services/email"
 import { appointmentCancelledEmail, appointmentRescheduledEmail, providerAppointmentCancelledEmail, providerAppointmentEmail, providerAppointmentRescheduledEmail, seekerAppointmentEmail } from "../utils/messages"
 import { AppointmentStatus } from "../models/Appointment"
+import { Op } from 'sequelize';
 
 
 export const getAppointments = async (req: Request, res: Response) => {
@@ -32,11 +33,29 @@ export const getAppointments = async (req: Request, res: Response) => {
     let whereCondition: { [key: string]: any; } = userObj
 
     if (type)
-        whereCondition.type = type
-    if (date)
-        whereCondition.date = date
+        whereCondition.type = type.toString().trim()
+    const rawDate = req.query.date;
+
+    let dateString: string | undefined;
+    if (typeof rawDate === 'string') {
+        dateString = rawDate;
+    } else if (Array.isArray(rawDate) && typeof rawDate[0] === 'string') {
+        dateString = rawDate[0];
+    }
+
+    if (dateString) {
+        const start = new Date(dateString);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date(dateString);
+        end.setHours(23, 59, 59, 999);
+
+        whereCondition.datetime = {
+            [Op.between]: [start, end]
+        };
+    }
     if (status)
-        whereCondition.status = status
+        whereCondition.status = status.toString().trim()
 
 
     try {
@@ -111,6 +130,31 @@ export const getAppointmentById = async (req: Request, res: Response) => {
 export const createAppointment = async (req: Request, res: Response) => {
     let { type, location, datetime, duration, paid, seekerId, providerId, referralId } = req.body;
 
+    const provider = await Provider.findByPk(providerId, {
+        attributes: ['id', 'firstName', 'lastName', 'image'],
+        include: [{
+            model: User,
+            attributes: ['email']
+        }]
+    })
+
+
+    const seeker = await Seeker.findByPk(seekerId, {
+        attributes: ['id', 'firstName', 'lastName', 'image'],
+        include: [{
+            model: User,
+            attributes: ['email']
+        }]
+    })
+
+    if (!provider) {
+        return handleResponse(res, 400, false, 'Provider not found')
+    }
+
+    if (!seeker) {
+        return handleResponse(res, 400, false, 'Seeker not found')
+    }
+
     try {
         const appointment = await Appointment.create({
             type,
@@ -126,24 +170,6 @@ export const createAppointment = async (req: Request, res: Response) => {
 
         //send email to provider and seeker
         //send notification to provider and seeker
-
-        const provider = await Provider.findByPk(providerId, {
-            attributes: ['id', 'firstName', 'lastName', 'image'],
-            include: [{
-                model: User,
-                attributes: ['email']
-            }]
-        })
-
-
-        const seeker = await Seeker.findByPk(seekerId, {
-            attributes: ['id', 'firstName', 'lastName', 'image'],
-            include: [{
-                model: User,
-                attributes: ['email']
-            }]
-        })
-
 
         appointment.setDataValue('provider', provider)
 

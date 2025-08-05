@@ -99,6 +99,10 @@ export class Provider extends Model {
     @Column(DataType.STRING(100))
     clinic!: string;
 
+    avgRating!: number;
+
+    countFavourites!: number;
+
 
     @ForeignKey(() => User)
     @AllowNull(false)

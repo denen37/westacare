@@ -30,6 +30,9 @@ import { Experience } from './Experience'
 import { Specialization } from './Specialization'
 import { Favorite } from './Favorite'
 import { Transfer } from './Transfer'
+import { Message } from './Message'
+import { ChatRoom } from './ChatRoom'
+import { OnlineStatus } from './OnlineStatus'
 
 
 export {
@@ -64,5 +67,8 @@ export {
     Experience,
     Specialization,
     Favorite,
-    Transfer
+    Transfer,
+    Message,
+    ChatRoom,
+    OnlineStatus
 }

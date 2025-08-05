@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 import { addAccount, getAccounts, getBanks } from "../controllers/account";
 import { cancelAppointment, completeAppointment, createAppointment, getAppointmentById, getAppointments, rescheduleAppointment } from "../controllers/appointment";
-import { registerSeeker, registerProvider, sendOTP, verifyOTP, login, resetPassword } from "../controllers/auth";
+import { registerSeeker, registerProvider, sendOTP, verifyOTP, login, resetPassword, changePassword } from "../controllers/auth";
 import { addFavorite, getAllFavorites, removeFavorite } from "../controllers/favorite";
 import { deleteNotification, getAllNotifications, getNotificationById, readNotification, refreshDeviceToken } from "../controllers/notification";
 import { initiatePayment, initiateTransfer, verifyPayment } from "../controllers/payment";
-import { createProviderProfile1, uploadAvatar, updateProfile2, dashboard, upload_credential, me, getProfileById, getProviders, updateSeekerProfile1, updateSeekerProfile2 } from '../controllers/profile'
+import { createProviderProfile1, uploadAvatar, updateProfile2, dashboard, upload_credential, me, getProfileById, getProviders, updateSeekerProfile1, updateSeekerProfile2, updateProviderProfile, updateSeekerProfile } from '../controllers/profile'
 import { createReferral, getMyReferrals, getReferralById } from "../controllers/referral";
 import { createReminder, deleteReminder, getAllMyReminders, getReminder, updateReminder } from "../controllers/reminder";
 import { uploads } from "../services/upload";
@@ -25,11 +25,13 @@ router.post('/auth/verify-otp', verifyOTP)
 router.post('/auth/login', login)
 router.get('/auth/me', me)
 router.post('/auth/reset-password', resetPassword);
+router.post('/auth/change-password', changePassword);
 
 router.get('/dashboard', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), dashboard);
 router.post('/upload-avatar', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), uploads.single('avatar'), uploadAvatar);
 router.post('/providers/create-profile', allowRoles(UserRole.PROVIDER), createProviderProfile1);
 router.post('/providers/update-profile', allowRoles(UserRole.PROVIDER), updateProfile2);
+router.post('/providers/update-any', allowRoles(UserRole.PROVIDER), updateProviderProfile);
 router.post('/providers/upload-credential', allowRoles(UserRole.PROVIDER), uploads.single('file'), upload_credential);
 
 router.get('/providers', allowRoles(UserRole.SEEKER), getProviders)
@@ -37,6 +39,7 @@ router.get('/providers/profile/:providerId', allowRoles(UserRole.SEEKER), getPro
 
 router.post('/seekers/update-profile1', allowRoles(UserRole.SEEKER), updateSeekerProfile1);
 router.post('/seekers/update-profile2', allowRoles(UserRole.SEEKER), updateSeekerProfile2);
+router.post('/seekers/update-any', allowRoles(UserRole.SEEKER), updateSeekerProfile);
 
 router.get('/appointments', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), getAppointments)
 router.get('/appointments/:id', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), getAppointmentById)
@@ -71,6 +74,7 @@ router.get('/notifications', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), get
 router.get('/notifications/:id', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), getNotificationById);
 router.delete('/notifications/:id', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), deleteNotification);
 router.post('/read-notification/:id', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), readNotification);
+//router.post('/get-unread-notification-count', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), getUnreadNotificationCount);
 
 router.post('refresh-device-token', allowRoles(UserRole.SEEKER, UserRole.PROVIDER), refreshDeviceToken)
 

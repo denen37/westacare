@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.sendOTP = exports.verifyOTP = exports.login = exports.registerProvider = exports.registerSeeker = void 0;
+exports.changePassword = exports.resetPassword = exports.sendOTP = exports.verifyOTP = exports.login = exports.registerProvider = exports.registerSeeker = void 0;
 const modules_1 = require("../utils/modules");
 const Models_1 = require("../models/Models");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -204,3 +204,28 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.resetPassword = resetPassword;
+const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const { oldPassword, newPassword } = req.body;
+        if (!oldPassword || !newPassword) {
+            return (0, modules_1.handleResponse)(res, 400, false, 'Please provide all required fields');
+        }
+        const user = yield Models_1.User.findOne({ where: { id: req.user.id } });
+        if (!user) {
+            return (0, modules_1.handleResponse)(res, 404, false, 'User not found');
+        }
+        const isMatch = yield bcryptjs_1.default.compare(oldPassword, (_a = user.password) !== null && _a !== void 0 ? _a : '');
+        if (!isMatch) {
+            return (0, modules_1.handleResponse)(res, 400, false, 'Invalid old password');
+        }
+        const hashPassword = yield bcryptjs_1.default.hash(newPassword, 10);
+        user.password = hashPassword;
+        yield user.save();
+        return (0, modules_1.handleResponse)(res, 200, true, 'Password changed successfully');
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, "Failed", { status: false, message: "Error changing password" });
+    }
+});
+exports.changePassword = changePassword;

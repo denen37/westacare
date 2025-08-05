@@ -49,6 +49,7 @@
     "sequelize": "^6.37.5",
     "sequelize-cli-typescript": "^3.2.0-c",
     "sequelize-typescript": "^2.1.6",
+    "socket.io": "^4.8.1",
     "uuid": "^11.1.0",
     "westacare": "file:"
   }

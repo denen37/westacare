@@ -49,6 +49,15 @@ export const getAllNotifications = async (req: Request, res: Response) => {
     // }
 };
 
+export const getNotificationCount = (req: Request, res: Response) => {
+    try {
+        const notifications = Notification.count();
+
+        return successResponse(res, "success", { notifications })
+    } catch (error) {
+        return errorResponse(res, "error", error)
+    }
+}
 
 
 export const getNotificationById = async (req: Request, res: Response) => {
@@ -92,6 +101,7 @@ export const readNotification = async (req: Request, res: Response) => {
         return errorResponse(res, "error reading notification", error)
     }
 }
+
 
 export const storeDeviceToken = (req: Request, res: Response) => {
     const { id } = req.user

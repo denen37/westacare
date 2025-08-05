@@ -97,6 +97,10 @@ __decorate([
     __metadata("design:type", Models_1.Centre)
 ], User.prototype, "centre", void 0);
 __decorate([
+    (0, sequelize_typescript_1.HasOne)(() => Models_1.OnlineStatus),
+    __metadata("design:type", Models_1.OnlineStatus)
+], User.prototype, "onlineStatus", void 0);
+__decorate([
     (0, sequelize_typescript_1.HasMany)(() => Models_1.Notification, { onDelete: 'CASCADE' }),
     __metadata("design:type", Models_1.Notification)
 ], User.prototype, "notifications", void 0);

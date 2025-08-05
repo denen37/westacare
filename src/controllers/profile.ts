@@ -5,6 +5,7 @@ import { Gender } from '../models/Seeker';
 import { Op } from 'sequelize';
 import { UserRole } from '../models/User';
 import { uploadFileToBlob } from '../services/uploadCloud';
+import { Sequelize } from 'sequelize-typescript';
 
 
 enum StorageContainer {
@@ -171,6 +172,21 @@ export const updateSeekerProfile2 = async (req: Request, res: Response) => {
     }
 }
 
+export const updateSeekerProfile = async (req: Request, res: Response) => {
+    const { id } = req.query;
+
+    try {
+        const updated = await Seeker.update(req.body, {
+            where: {
+                userId: id
+            }
+        })
+
+        return successResponse(res, 'success', updated)
+    } catch (error) {
+        return errorResponse(res, 'error', error)
+    }
+}
 export const uploadAvatar = async (req: Request, res: Response) => {
     if (!req.file) {
         return handleResponse(res, 404, false, 'No file uploaded');
@@ -254,6 +270,22 @@ export const updateProfile2 = async (req: Request, res: Response) => {
 
         return successResponse(res, 'success', updated);
 
+    } catch (error) {
+        return errorResponse(res, 'error', error);
+    }
+}
+
+export const updateProviderProfile = async (req: Request, res: Response) => {
+    const { id } = req.query;
+
+    try {
+        const updated = Provider.update(req.body, {
+            where: {
+                userId: id
+            }
+        })
+
+        return successResponse(res, 'success', updated);
     } catch (error) {
         return errorResponse(res, 'error', error);
     }
@@ -433,19 +465,18 @@ export const getProfileById = async (req: Request, res: Response) => {
 
 
 export const getProviders = async (req: Request, res: Response) => {
-    let { specialization, category } = req.query;
+    let { specialization, category, orderBy } = req.query;
 
-    let spec
-    let whereCondition: { [key: string]: any } = {}
+    let whereCondition: { [key: string]: any } = {};
 
     if (specialization) {
-        spec = await Specialization.findOne({
-            where: {
-                name: specialization
-            }
-        })
+        const spec = await Specialization.findOne({
+            where: { name: specialization }
+        });
 
-        whereCondition.specializationId = spec?.id;
+        if (spec) {
+            whereCondition.specializationId = spec.id;
+        }
     }
 
     if (category) {
@@ -453,9 +484,8 @@ export const getProviders = async (req: Request, res: Response) => {
     }
 
     try {
-        const providers = await Provider.findAll({
+        let providers = await Provider.findAll({
             where: whereCondition,
-
             include: [
                 {
                     model: User,
@@ -466,31 +496,80 @@ export const getProviders = async (req: Request, res: Response) => {
                 {
                     model: Specialization
                 }
+            ],
+            raw: false
+        });
 
-            ]
-        })
+        const providerIds = providers.map(p => p.id);
 
-        for (let i = 0; i < providers.length; i++) {
-            const provider = providers[i];
+        // Batch-fetch feedback stats
+        const feedbackStats: any = await Feedback.findAll({
+            attributes: [
+                'providerId',
+                [Sequelize.fn('AVG', Sequelize.col('rating')), 'avgRating'],
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'countRating']
+            ],
+            where: { providerId: providerIds },
+            group: ['providerId'],
+            raw: true
+        });
 
-            const countRating = await Feedback.count({ where: { providerId: provider.id } })
-            const addRating = await Feedback.sum('rating', {
-                where: {
-                    providerId: provider.id
-                }
-            }) ?? 0;
+        const feedbackMap = new Map<number, { avgRating: number; countRating: number }>();
+        feedbackStats.forEach((stat: any) => {
+            feedbackMap.set(stat.providerId, {
+                avgRating: Math.round(parseFloat(stat.avgRating) * 10) / 10,
+                countRating: parseInt(stat.countRating)
+            });
+        });
 
-            let avgRating: number = 0
+        // Batch-fetch favorites count
+        const favorites: any = await Favorite.findAll({
+            attributes: [
+                'providerId',
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'countFavourites']
+            ],
+            where: { providerId: providerIds },
+            group: ['providerId'],
+            raw: true
+        });
 
-            if (countRating > 0)
-                avgRating = addRating / countRating;
+        const favMap = new Map<number, number>();
+        favorites.forEach((fav: any) => {
+            favMap.set(fav.providerId, parseInt(fav.countFavourites));
+        });
 
-            const countFavourites = await Favorite.count({ where: { providerId: provider.id } })
+        // Attach stats to providers
+        providers.forEach(provider => {
+            const stats = feedbackMap.get(provider.id);
+            const favCount = favMap.get(provider.id) ?? 0;
 
-            provider.setDataValue('avgRating', avgRating);
-            provider.setDataValue('favourites', countFavourites);
+            provider.setDataValue('avgRating', stats?.avgRating ?? 0);
+            provider.setDataValue('countRating', stats?.countRating ?? 0);
+            provider.setDataValue('countFavourites', favCount);
+        });
+
+        // Ordering
+        if (orderBy) {
+            const [field, direction = 'ASC'] = orderBy.toString().split(',');
+            const isDesc = direction.toUpperCase() === 'DESC';
+
+            if (field === 'rating') {
+                providers.sort((a, b) => {
+                    const aRating = a.getDataValue('avgRating') ?? -1;
+                    const bRating = b.getDataValue('avgRating') ?? -1;
+
+                    return isDesc ? bRating - aRating : aRating - bRating;
+                });
+            } else if (field === 'favorites') {
+                providers.sort((a, b) => {
+                    const aFav = a.getDataValue('countFavourites') ?? 0;
+                    const bFav = b.getDataValue('countFavourites') ?? 0;
+
+                    return isDesc ? bFav - aFav : aFav - bFav;
+                })
+
+            }
         }
-
 
         return successResponse(res, 'success', providers);
     } catch (error) {

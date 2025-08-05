@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType, HasOne, BelongsToMany, HasMany, AllowNull, Unique, Default, Index, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { Seeker, Provider, Centre, Notification, Transaction, AccountDetails, Feedback, Wallet, Appointment } from './Models';
+import { Seeker, Provider, Centre, Notification, Transaction, AccountDetails, Feedback, Wallet, Appointment, OnlineStatus } from './Models';
 
 export enum UserRole {
     ADMIN = "admin",
@@ -93,6 +93,8 @@ export class User extends Model {
     @HasOne(() => Centre)
     centre!: Centre
 
+    @HasOne(() => OnlineStatus)
+    onlineStatus!: OnlineStatus
 
     @HasMany(() => Notification, { onDelete: 'CASCADE' })
     notifications!: Notification

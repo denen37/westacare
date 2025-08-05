@@ -9,12 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProviders = exports.getProfileById = exports.dashboard = exports.me = exports.upload_credential = exports.updateProfile2 = exports.uploadAvatar = exports.updateSeekerProfile2 = exports.updateSeekerProfile1 = exports.createProviderProfile1 = void 0;
+exports.getProviders = exports.getProfileById = exports.dashboard = exports.me = exports.upload_credential = exports.updateProviderProfile = exports.updateProfile2 = exports.uploadAvatar = exports.updateSeekerProfile = exports.updateSeekerProfile2 = exports.updateSeekerProfile1 = exports.createProviderProfile1 = void 0;
 const modules_1 = require("../utils/modules");
 const Models_1 = require("../models/Models");
 const sequelize_1 = require("sequelize");
 const User_1 = require("../models/User");
 const uploadCloud_1 = require("../services/uploadCloud");
+const sequelize_typescript_1 = require("sequelize-typescript");
 var StorageContainer;
 (function (StorageContainer) {
     StorageContainer["PROFILE"] = "profile";
@@ -126,6 +127,21 @@ const updateSeekerProfile2 = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.updateSeekerProfile2 = updateSeekerProfile2;
+const updateSeekerProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.query;
+    try {
+        const updated = yield Models_1.Seeker.update(req.body, {
+            where: {
+                userId: id
+            }
+        });
+        return (0, modules_1.successResponse)(res, 'success', updated);
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.updateSeekerProfile = updateSeekerProfile;
 const uploadAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.file) {
         return (0, modules_1.handleResponse)(res, 404, false, 'No file uploaded');
@@ -186,6 +202,21 @@ const updateProfile2 = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.updateProfile2 = updateProfile2;
+const updateProviderProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.query;
+    try {
+        const updated = Models_1.Provider.update(req.body, {
+            where: {
+                userId: id
+            }
+        });
+        return (0, modules_1.successResponse)(res, 'success', updated);
+    }
+    catch (error) {
+        return (0, modules_1.errorResponse)(res, 'error', error);
+    }
+});
+exports.updateProviderProfile = updateProviderProfile;
 const upload_credential = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { name, providerId } = req.body;
     try {
@@ -334,23 +365,21 @@ const getProfileById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getProfileById = getProfileById;
 const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    let { specialization, category } = req.query;
-    let spec;
+    let { specialization, category, orderBy } = req.query;
     let whereCondition = {};
     if (specialization) {
-        spec = yield Models_1.Specialization.findOne({
-            where: {
-                name: specialization
-            }
+        const spec = yield Models_1.Specialization.findOne({
+            where: { name: specialization }
         });
-        whereCondition.specializationId = spec === null || spec === void 0 ? void 0 : spec.id;
+        if (spec) {
+            whereCondition.specializationId = spec.id;
+        }
     }
     if (category) {
         whereCondition.category = category;
     }
     try {
-        const providers = yield Models_1.Provider.findAll({
+        let providers = yield Models_1.Provider.findAll({
             where: whereCondition,
             include: [
                 {
@@ -362,22 +391,71 @@ const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 {
                     model: Models_1.Specialization
                 }
-            ]
+            ],
+            raw: false
         });
-        for (let i = 0; i < providers.length; i++) {
-            const provider = providers[i];
-            const countRating = yield Models_1.Feedback.count({ where: { providerId: provider.id } });
-            const addRating = (_a = yield Models_1.Feedback.sum('rating', {
-                where: {
-                    providerId: provider.id
-                }
-            })) !== null && _a !== void 0 ? _a : 0;
-            let avgRating = 0;
-            if (countRating > 0)
-                avgRating = addRating / countRating;
-            const countFavourites = yield Models_1.Favorite.count({ where: { providerId: provider.id } });
-            provider.setDataValue('avgRating', avgRating);
-            provider.setDataValue('favourites', countFavourites);
+        const providerIds = providers.map(p => p.id);
+        // Batch-fetch feedback stats
+        const feedbackStats = yield Models_1.Feedback.findAll({
+            attributes: [
+                'providerId',
+                [sequelize_typescript_1.Sequelize.fn('AVG', sequelize_typescript_1.Sequelize.col('rating')), 'avgRating'],
+                [sequelize_typescript_1.Sequelize.fn('COUNT', sequelize_typescript_1.Sequelize.col('id')), 'countRating']
+            ],
+            where: { providerId: providerIds },
+            group: ['providerId'],
+            raw: true
+        });
+        const feedbackMap = new Map();
+        feedbackStats.forEach((stat) => {
+            feedbackMap.set(stat.providerId, {
+                avgRating: Math.round(parseFloat(stat.avgRating) * 10) / 10,
+                countRating: parseInt(stat.countRating)
+            });
+        });
+        // Batch-fetch favorites count
+        const favorites = yield Models_1.Favorite.findAll({
+            attributes: [
+                'providerId',
+                [sequelize_typescript_1.Sequelize.fn('COUNT', sequelize_typescript_1.Sequelize.col('id')), 'countFavourites']
+            ],
+            where: { providerId: providerIds },
+            group: ['providerId'],
+            raw: true
+        });
+        const favMap = new Map();
+        favorites.forEach((fav) => {
+            favMap.set(fav.providerId, parseInt(fav.countFavourites));
+        });
+        // Attach stats to providers
+        providers.forEach(provider => {
+            var _a, _b, _c;
+            const stats = feedbackMap.get(provider.id);
+            const favCount = (_a = favMap.get(provider.id)) !== null && _a !== void 0 ? _a : 0;
+            provider.setDataValue('avgRating', (_b = stats === null || stats === void 0 ? void 0 : stats.avgRating) !== null && _b !== void 0 ? _b : 0);
+            provider.setDataValue('countRating', (_c = stats === null || stats === void 0 ? void 0 : stats.countRating) !== null && _c !== void 0 ? _c : 0);
+            provider.setDataValue('countFavourites', favCount);
+        });
+        // Ordering
+        if (orderBy) {
+            const [field, direction = 'ASC'] = orderBy.toString().split(',');
+            const isDesc = direction.toUpperCase() === 'DESC';
+            if (field === 'rating') {
+                providers.sort((a, b) => {
+                    var _a, _b;
+                    const aRating = (_a = a.getDataValue('avgRating')) !== null && _a !== void 0 ? _a : -1;
+                    const bRating = (_b = b.getDataValue('avgRating')) !== null && _b !== void 0 ? _b : -1;
+                    return isDesc ? bRating - aRating : aRating - bRating;
+                });
+            }
+            else if (field === 'favorites') {
+                providers.sort((a, b) => {
+                    var _a, _b;
+                    const aFav = (_a = a.getDataValue('countFavourites')) !== null && _a !== void 0 ? _a : 0;
+                    const bFav = (_b = b.getDataValue('countFavourites')) !== null && _b !== void 0 ? _b : 0;
+                    return isDesc ? bFav - aFav : aFav - bFav;
+                });
+            }
         }
         return (0, modules_1.successResponse)(res, 'success', providers);
     }

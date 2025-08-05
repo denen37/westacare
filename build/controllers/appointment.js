@@ -16,6 +16,7 @@ const Models_1 = require("../models/Models");
 const email_1 = require("../services/email");
 const messages_1 = require("../utils/messages");
 const Appointment_1 = require("../models/Appointment");
+const sequelize_1 = require("sequelize");
 const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id, role } = req.user;
     let { type, date, status } = req.query;
@@ -35,11 +36,26 @@ const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function
     let userObj = role === User_1.UserRole.PROVIDER ? { providerId: proOrSeekId } : { seekerId: proOrSeekId };
     let whereCondition = userObj;
     if (type)
-        whereCondition.type = type;
-    if (date)
-        whereCondition.date = date;
+        whereCondition.type = type.toString().trim();
+    const rawDate = req.query.date;
+    let dateString;
+    if (typeof rawDate === 'string') {
+        dateString = rawDate;
+    }
+    else if (Array.isArray(rawDate) && typeof rawDate[0] === 'string') {
+        dateString = rawDate[0];
+    }
+    if (dateString) {
+        const start = new Date(dateString);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(dateString);
+        end.setHours(23, 59, 59, 999);
+        whereCondition.datetime = {
+            [sequelize_1.Op.between]: [start, end]
+        };
+    }
     if (status)
-        whereCondition.status = status;
+        whereCondition.status = status.toString().trim();
     try {
         const appointments = yield Models_1.Appointment.findAll({
             where: whereCondition,
@@ -110,6 +126,26 @@ exports.getAppointmentById = getAppointmentById;
 const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     let { type, location, datetime, duration, paid, seekerId, providerId, referralId } = req.body;
+    const provider = yield Models_1.Provider.findByPk(providerId, {
+        attributes: ['id', 'firstName', 'lastName', 'image'],
+        include: [{
+                model: User_1.User,
+                attributes: ['email']
+            }]
+    });
+    const seeker = yield Models_1.Seeker.findByPk(seekerId, {
+        attributes: ['id', 'firstName', 'lastName', 'image'],
+        include: [{
+                model: User_1.User,
+                attributes: ['email']
+            }]
+    });
+    if (!provider) {
+        return (0, modules_1.handleResponse)(res, 400, false, 'Provider not found');
+    }
+    if (!seeker) {
+        return (0, modules_1.handleResponse)(res, 400, false, 'Seeker not found');
+    }
     try {
         const appointment = yield Models_1.Appointment.create({
             type,
@@ -123,20 +159,6 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
         //send email to provider and seeker
         //send notification to provider and seeker
-        const provider = yield Models_1.Provider.findByPk(providerId, {
-            attributes: ['id', 'firstName', 'lastName', 'image'],
-            include: [{
-                    model: User_1.User,
-                    attributes: ['email']
-                }]
-        });
-        const seeker = yield Models_1.Seeker.findByPk(seekerId, {
-            attributes: ['id', 'firstName', 'lastName', 'image'],
-            include: [{
-                    model: User_1.User,
-                    attributes: ['email']
-                }]
-        });
         appointment.setDataValue('provider', provider);
         appointment.setDataValue('seeker', seeker);
         let appointmentVal = appointment.toJSON();
