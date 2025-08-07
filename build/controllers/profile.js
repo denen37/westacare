@@ -40,6 +40,7 @@ const createProviderProfile1 = (req, res) => __awaiter(void 0, void 0, void 0, f
             about,
             userId,
             clinic,
+            specializationId,
             qualification,
             registration
         }, {

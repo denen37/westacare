@@ -61,6 +61,7 @@ export const createProviderProfile1 = async (req: Request, res: Response) => {
             about,
             userId,
             clinic,
+            specializationId,
             qualification,
             registration
         },
