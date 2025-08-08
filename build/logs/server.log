@@ -237,3 +237,12 @@
 2025-08-05 13:30:08	POST - /api/seekers/update-any
 2025-08-05 13:30:29	POST - /api/seekers/update-any
 2025-08-05 13:34:13	POST - /api/seekers/update-any
+2025-08-07 22:32:47	GET - /api/providers
+2025-08-07 22:33:02	GET - /api/dashboard
+2025-08-07 22:39:24	POST - /api/appointments
+2025-08-08 11:39:53	POST - /api/auth/login
+2025-08-08 11:40:19	POST - /api/auth/login
+2025-08-08 11:40:26	POST - /api/auth/login
+2025-08-08 11:41:43	GET - /api/appointments
+2025-08-08 11:42:18	POST - /api/auth/login
+2025-08-08 11:43:12	GET - /api/appointments

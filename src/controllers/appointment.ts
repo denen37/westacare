@@ -26,7 +26,18 @@ export const getAppointments = async (req: Request, res: Response) => {
         ]
     })
 
-    let proOrSeekId = role === UserRole.PROVIDER ? user?.provider.id : user?.seeker.id
+    if (role === UserRole.PROVIDER && !user?.provider) {
+        return handleResponse(res, 404, false, "Provider profile does not exist")
+    }
+
+    if (role === UserRole.SEEKER && !user?.seeker) {
+        return handleResponse(res, 404, false, "Seeker profile does not exist")
+    }
+
+    let proOrSeekId =
+        role === UserRole.PROVIDER
+            ? user?.provider?.id
+            : user?.seeker?.id;
 
     let userObj = role === UserRole.PROVIDER ? { providerId: proOrSeekId } : { seekerId: proOrSeekId }
 

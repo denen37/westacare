@@ -18,6 +18,7 @@ const messages_1 = require("../utils/messages");
 const Appointment_1 = require("../models/Appointment");
 const sequelize_1 = require("sequelize");
 const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     let { id, role } = req.user;
     let { type, date, status } = req.query;
     let user = yield User_1.User.findByPk(id, {
@@ -32,7 +33,15 @@ const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function
             }
         ]
     });
-    let proOrSeekId = role === User_1.UserRole.PROVIDER ? user === null || user === void 0 ? void 0 : user.provider.id : user === null || user === void 0 ? void 0 : user.seeker.id;
+    if (role === User_1.UserRole.PROVIDER && !(user === null || user === void 0 ? void 0 : user.provider)) {
+        return (0, modules_1.handleResponse)(res, 404, false, "Provider profile does not exist");
+    }
+    if (role === User_1.UserRole.SEEKER && !(user === null || user === void 0 ? void 0 : user.seeker)) {
+        return (0, modules_1.handleResponse)(res, 404, false, "Seeker profile does not exist");
+    }
+    let proOrSeekId = role === User_1.UserRole.PROVIDER
+        ? (_a = user === null || user === void 0 ? void 0 : user.provider) === null || _a === void 0 ? void 0 : _a.id
+        : (_b = user === null || user === void 0 ? void 0 : user.seeker) === null || _b === void 0 ? void 0 : _b.id;
     let userObj = role === User_1.UserRole.PROVIDER ? { providerId: proOrSeekId } : { seekerId: proOrSeekId };
     let whereCondition = userObj;
     if (type)
